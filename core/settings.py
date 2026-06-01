@@ -1,5 +1,5 @@
-
 from pathlib import Path
+import os
 
 # =========================
 # BASE DIR
@@ -11,17 +11,37 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # SECURITY
 # =========================
 
-SECRET_KEY = 'django-insecure-4h-e@i*#sm!n7)3jxh6p4ag9smn^pf_i=1wbnm+9v8@r-kd#o='
+SECRET_KEY = os.environ.get(
+    'SECRET_KEY',
+    'django-insecure-4h-e@i*#sm!n7)3jxh6p4ag9smn^pf_i=1wbnm+9v8@r-kd#o='
+)
 
-DEBUG = True
+DEBUG = os.environ.get(
+    'DEBUG',
+    'True'
+) == 'True'
 
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = [
+
+    '*',
+
+    '.onrender.com',
+
+    'localhost',
+
+    '127.0.0.1',
+
+]
 
 # =========================
-# NGROK / CSRF
+# CSRF
 # =========================
 
 CSRF_TRUSTED_ORIGINS = [
+
+    'https://*.onrender.com',
+
+    'https://*.ngrok-free.dev',
 
     'https://dorathy-uncravatted-nonoriginally.ngrok-free.dev',
 
@@ -34,19 +54,31 @@ CSRF_TRUSTED_ORIGINS = [
 INSTALLED_APPS = [
 
     'django.contrib.admin',
+
     'django.contrib.auth',
+
     'django.contrib.contenttypes',
+
     'django.contrib.sessions',
+
     'django.contrib.messages',
+
     'django.contrib.staticfiles',
 
     # APPS DO SISTEMA
+
     'home',
+
     'usuarios',
+
     'motoristas',
+
     'agendamentos',
+
     'dashboard',
+
     'painel',
+
 ]
 
 # =========================
@@ -56,6 +88,8 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
 
     'django.middleware.security.SecurityMiddleware',
+
+    'whitenoise.middleware.WhiteNoiseMiddleware',
 
     'django.contrib.sessions.middleware.SessionMiddleware',
 
@@ -68,6 +102,7 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
 
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+
 ]
 
 # =========================
@@ -81,7 +116,9 @@ ROOT_URLCONF = 'core.urls'
 # =========================
 
 TEMPLATES = [
+
     {
+
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
 
         'DIRS': [],
@@ -89,6 +126,7 @@ TEMPLATES = [
         'APP_DIRS': True,
 
         'OPTIONS': {
+
             'context_processors': [
 
                 'django.template.context_processors.request',
@@ -96,9 +134,13 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
 
                 'django.contrib.messages.context_processors.messages',
+
             ],
+
         },
+
     },
+
 ]
 
 # =========================
@@ -112,11 +154,15 @@ WSGI_APPLICATION = 'core.wsgi.application'
 # =========================
 
 DATABASES = {
+
     'default': {
+
         'ENGINE': 'django.db.backends.sqlite3',
 
         'NAME': BASE_DIR / 'db.sqlite3',
+
     }
+
 }
 
 # =========================
@@ -126,20 +172,29 @@ DATABASES = {
 AUTH_PASSWORD_VALIDATORS = [
 
     {
+
         'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
+
     },
 
     {
+
         'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
+
     },
 
     {
+
         'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
+
     },
 
     {
+
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
+
     },
+
 ]
 
 # =========================
@@ -158,11 +213,21 @@ USE_TZ = False
 # STATIC FILES
 # =========================
 
-STATIC_URL = 'static/'
+STATIC_URL = '/static/'
 
 STATICFILES_DIRS = [
+
     BASE_DIR / 'static',
+
 ]
+
+STATIC_ROOT = BASE_DIR / 'staticfiles'
+
+STATICFILES_STORAGE = (
+
+    'whitenoise.storage.CompressedManifestStaticFilesStorage'
+
+)
 
 # =========================
 # MEDIA FILES
@@ -188,5 +253,14 @@ LOGIN_REDIRECT_URL = '/agendamentos/'
 
 LOGOUT_REDIRECT_URL = '/login/'
 
-STATIC_ROOT = BASE_DIR / 'staticfiles'
+# =========================
+# RENDER
+# =========================
 
+SECURE_PROXY_SSL_HEADER = (
+
+    'HTTP_X_FORWARDED_PROTO',
+
+    'https'
+
+)
