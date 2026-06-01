@@ -1,5 +1,6 @@
 from pathlib import Path
 import os
+import dj_database_url
 
 # =========================
 # BASE DIR
@@ -18,7 +19,7 @@ SECRET_KEY = os.environ.get(
 
 DEBUG = os.environ.get(
     'DEBUG',
-    'True'
+    'False'
 ) == 'True'
 
 ALLOWED_HOSTS = [
@@ -155,13 +156,13 @@ WSGI_APPLICATION = 'core.wsgi.application'
 
 DATABASES = {
 
-    'default': {
+    'default': dj_database_url.config(
 
-        'ENGINE': 'django.db.backends.sqlite3',
+        default=f"sqlite:///{BASE_DIR / 'db.sqlite3'}",
 
-        'NAME': BASE_DIR / 'db.sqlite3',
+        conn_max_age=600,
 
-    }
+    )
 
 }
 
@@ -172,27 +173,19 @@ DATABASES = {
 AUTH_PASSWORD_VALIDATORS = [
 
     {
-
         'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
-
     },
 
     {
-
         'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
-
     },
 
     {
-
         'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
-
     },
 
     {
-
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
-
     },
 
 ]
@@ -224,9 +217,7 @@ STATICFILES_DIRS = [
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 
 STATICFILES_STORAGE = (
-
     'whitenoise.storage.CompressedManifestStaticFilesStorage'
-
 )
 
 # =========================
@@ -261,6 +252,6 @@ SECURE_PROXY_SSL_HEADER = (
 
     'HTTP_X_FORWARDED_PROTO',
 
-    'https'
+    'https',
 
 )
