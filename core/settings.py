@@ -188,3 +188,5 @@ LOGIN_REDIRECT_URL = '/agendamentos/'
 
 LOGOUT_REDIRECT_URL = '/login/'
 
+STATIC_ROOT = BASE_DIR / 'staticfiles'
+
