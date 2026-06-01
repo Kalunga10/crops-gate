@@ -1,0 +1,775 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Crops Control | ControlGates</title>
+
+    <!-- FAVICON -->
+    <link rel="icon" href="{% static 'img/logo.png' %}">
+
+    <!-- Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+
+    <style>
+
+        *{
+            margin:0;
+            padding:0;
+            box-sizing:border-box;
+            font-family:'Poppins', sans-serif;
+        }
+
+        body{
+
+            min-height:100vh;
+
+            overflow:hidden;
+
+            background:#0b3b22;
+
+            position:relative;
+        }
+
+        /* ===================================
+        BACKGROUND
+        =================================== */
+
+        .background{
+
+            position:fixed;
+
+            width:100%;
+            height:100%;
+
+            background:
+            linear-gradient(
+                rgba(0,0,0,0.60),
+                rgba(0,0,0,0.60)
+            ),
+
+            url('https://images.unsplash.com/photo-1500382017468-9049fed747ef?q=80&w=2070&auto=format&fit=crop');
+
+            background-size:cover;
+
+            background-position:center;
+
+            z-index:-3;
+        }
+
+        /* ===================================
+        LEFT EFFECT
+        =================================== */
+
+        .left-effect{
+
+            position:fixed;
+
+            left:0;
+            top:0;
+
+            width:45%;
+            height:100%;
+
+            background:
+            linear-gradient(
+                90deg,
+                rgba(0,70,35,0.95),
+                rgba(0,70,35,0.55),
+                transparent
+            );
+
+            z-index:-2;
+        }
+
+        /* ===================================
+        CIRCLES
+        =================================== */
+
+        .circle{
+
+            position:absolute;
+
+            border:2px solid rgba(255,215,0,0.18);
+
+            border-radius:50%;
+        }
+
+        .circle-1{
+
+            width:750px;
+            height:750px;
+
+            left:-380px;
+            top:50%;
+
+            transform:translateY(-50%);
+        }
+
+        .circle-2{
+
+            width:1050px;
+            height:1050px;
+
+            left:-520px;
+            top:50%;
+
+            transform:translateY(-50%);
+        }
+
+        /* ===================================
+        MAIN
+        =================================== */
+
+        .main-container{
+
+            min-height:100vh;
+
+            display:flex;
+
+            justify-content:center;
+
+            align-items:center;
+
+            padding:20px 20px 110px 20px;
+        }
+
+        /* ===================================
+        LOGIN CARD
+        =================================== */
+
+        .login-card{
+
+            width:100%;
+
+            max-width:620px;
+
+            background:#ffffff;
+
+            border-radius:28px;
+
+            padding:32px 36px;
+
+            box-shadow:
+            0 25px 70px rgba(0,0,0,0.35);
+
+            animation:fadeIn 1s ease;
+
+            position:relative;
+
+            overflow:hidden;
+        }
+
+        @keyframes fadeIn{
+
+            from{
+                opacity:0;
+                transform:translateY(20px);
+            }
+
+            to{
+                opacity:1;
+                transform:translateY(0);
+            }
+        }
+
+        /* ===================================
+        LOGO AREA
+        =================================== */
+
+        .logo-area{
+
+            background:#ffffff;
+
+            border-radius:18px;
+
+            padding:8px 8px 16px 8px;
+
+            margin-bottom:8px;
+        }
+
+        /* ===================================
+        LOGO
+        =================================== */
+
+        .logo{
+
+            width:100%;
+
+            display:flex;
+
+            justify-content:center;
+
+            margin-bottom:12px;
+        }
+
+        .logo img{
+
+            width:230px;
+
+            max-width:100%;
+        }
+
+        /* ===================================
+        DIVIDER
+        =================================== */
+
+        .divider{
+
+            display:flex;
+
+            align-items:center;
+
+            justify-content:center;
+
+            gap:18px;
+
+            margin:12px 0 20px 0;
+        }
+
+        .divider-line{
+
+            flex:1;
+
+            height:1px;
+
+            background:#dcdcdc;
+        }
+
+        .divider i{
+
+            color:#0d6b38;
+
+            font-size:18px;
+        }
+
+        /* ===================================
+        ALERTA ERRO
+        =================================== */
+
+        .alert-login{
+
+            background:#ffe8e8;
+
+            color:#b42318;
+
+            border:1px solid #f5b5b5;
+
+            padding:12px 15px;
+
+            border-radius:12px;
+
+            font-size:14px;
+
+            margin-bottom:18px;
+
+            display:flex;
+
+            align-items:center;
+
+            gap:10px;
+        }
+
+        /* ===================================
+        TEXTS
+        =================================== */
+
+        .title{
+
+            text-align:center;
+
+            font-size:24px;
+
+            font-weight:700;
+
+            color:#0d6b38;
+
+            margin-bottom:8px;
+
+            line-height:1.3;
+        }
+
+        .subtitle{
+
+            text-align:center;
+
+            color:#666;
+
+            font-size:14px;
+
+            margin-bottom:20px;
+        }
+
+        /* ===================================
+        INPUTS
+        =================================== */
+
+        .input-group{
+
+            margin-bottom:16px;
+
+            transition:0.3s;
+        }
+
+        .input-group:focus-within{
+
+            transform:translateY(-2px);
+        }
+
+        .input-group-text{
+
+            background:#fff;
+
+            border-right:none;
+
+            border-radius:14px 0 0 14px;
+
+            padding:14px;
+
+            color:#0d6b38;
+
+            font-size:17px;
+        }
+
+        .form-control{
+
+            height:52px;
+
+            border-left:none;
+
+            border-radius:0 14px 14px 0;
+
+            font-size:15px;
+
+            box-shadow:none;
+
+            transition:0.3s;
+        }
+
+        .form-control:hover{
+
+            border-color:#198754;
+        }
+
+        .form-control:focus{
+
+            box-shadow:none;
+
+            border-color:#198754;
+        }
+
+        /* ===================================
+        BUTTON
+        =================================== */
+
+        .btn-login{
+
+            width:100%;
+
+            height:52px;
+
+            border:none;
+
+            border-radius:14px;
+
+            background:
+            linear-gradient(
+                135deg,
+                #198754,
+                #0d6b38
+            );
+
+            color:#fff;
+
+            font-size:17px;
+
+            font-weight:700;
+
+            transition:0.3s;
+
+            margin-top:5px;
+        }
+
+        .btn-login:hover{
+
+            transform:translateY(-2px);
+
+            box-shadow:
+            0 12px 22px rgba(25,135,84,0.35);
+        }
+
+        /* ===================================
+        FOOTER
+        =================================== */
+
+        .footer{
+
+            position:fixed;
+
+            bottom:10px;
+
+            left:0;
+
+            width:100%;
+
+            text-align:center;
+
+            color:#fff;
+
+            font-size:11px;
+
+            line-height:1.2;
+
+            z-index:1;
+        }
+
+        .footer i{
+
+            color:#9acd32;
+
+            margin-right:5px;
+        }
+
+        .footer strong{
+
+            color:#9acd32;
+        }
+
+        /* ===================================
+        RESPONSIVE TABLET
+        =================================== */
+
+        @media(max-width:992px){
+
+            .login-card{
+
+                max-width:560px;
+
+                padding:30px 24px;
+            }
+
+            .logo img{
+
+                width:210px;
+            }
+
+            .title{
+
+                font-size:22px;
+            }
+
+            .subtitle{
+
+                font-size:13px;
+            }
+        }
+
+        /* ===================================
+        RESPONSIVE MOBILE
+        =================================== */
+
+        @media(max-width:576px){
+
+            body{
+                overflow:hidden;
+            }
+
+            .main-container{
+
+                padding:10px 10px 90px 10px;
+            }
+
+            .login-card{
+
+                padding:20px 15px;
+
+                border-radius:22px;
+            }
+
+            .logo{
+
+                margin-bottom:10px;
+            }
+
+            .logo img{
+
+                width:150px;
+            }
+
+            .divider{
+
+                margin:10px 0 16px 0;
+            }
+
+            .divider i{
+
+                font-size:16px;
+            }
+
+            .title{
+
+                font-size:19px;
+            }
+
+            .subtitle{
+
+                font-size:12px;
+
+                margin-bottom:16px;
+            }
+
+            .input-group{
+
+                margin-bottom:12px;
+            }
+
+            .input-group-text{
+
+                padding:11px;
+
+                font-size:14px;
+            }
+
+            .form-control{
+
+                height:44px;
+
+                font-size:13px;
+            }
+
+            .btn-login{
+
+                height:46px;
+
+                font-size:15px;
+            }
+
+            .footer{
+
+                bottom:5px;
+
+                font-size:9px;
+            }
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+    <!-- BACKGROUND -->
+    <div class="background"></div>
+
+    <!-- LEFT EFFECT -->
+    <div class="left-effect"></div>
+
+    <!-- CIRCLES -->
+    <div class="circle circle-1"></div>
+    <div class="circle circle-2"></div>
+
+    <!-- MAIN -->
+    <div class="main-container">
+
+        <div class="login-card">
+
+            <!-- LOGO AREA -->
+            <div class="logo-area">
+
+                <div class="logo">
+
+                    <img
+                        src="{% static 'img/logo.png' %}"
+                        alt="Crops Control">
+
+                </div>
+
+            </div>
+
+            <!-- DIVIDER -->
+            <div class="divider">
+
+                <div class="divider-line"></div>
+
+                <i class="bi bi-flower1"></i>
+
+                <div class="divider-line"></div>
+
+            </div>
+
+            <!-- TITLES -->
+            <h1 class="title">
+                Sistema de Solicitação de Agendamento
+            </h1>
+
+            <p class="subtitle">
+                Organização, agilidade e controle para suas operações.
+            </p>
+
+            <!-- ALERTA LOGIN -->
+            {% if messages %}
+                {% for message in messages %}
+
+                    <div class="alert-login">
+
+                        <i class="bi bi-exclamation-triangle-fill"></i>
+
+                        <span>{{ message }}</span>
+
+                    </div>
+
+                {% endfor %}
+            {% endif %}
+
+            <!-- FORM -->
+            <form id="formLogin" method="POST">
+
+                {% csrf_token %}
+
+                <!-- LOGIN -->
+                <div class="input-group">
+
+                    <span class="input-group-text">
+                        <i class="bi bi-person"></i>
+                    </span>
+
+                    <input
+                        type="text"
+                        name="usuario"
+                        class="form-control"
+                        placeholder="Login"
+                        autocomplete="username"
+                        required>
+
+                </div>
+
+                <!-- SENHA -->
+                <div class="input-group">
+
+                    <span class="input-group-text">
+                        <i class="bi bi-lock"></i>
+                    </span>
+
+                    <input
+                        type="password"
+                        name="senha"
+                        class="form-control"
+                        id="senha"
+                        placeholder="Senha"
+                        autocomplete="current-password"
+                        required>
+
+                    <span
+                        class="input-group-text"
+                        style="cursor:pointer;"
+                        onclick="mostrarSenha()">
+
+                        <i class="bi bi-eye" id="iconeSenha"></i>
+
+                    </span>
+
+                </div>
+
+                <!-- BUTTON -->
+                <button type="submit" class="btn-login" id="btnEntrar">
+
+                    <span id="textoBotao">
+
+                        <i class="bi bi-box-arrow-in-right"></i>
+
+                        ENTRAR
+
+                    </span>
+
+                </button>
+
+            </form>
+
+        </div>
+
+    </div>
+
+    <!-- FOOTER -->
+    <div class="footer">
+
+        <p>
+            <i class="bi bi-shield-check"></i>
+            Sistema seguro e monitorado
+        </p>
+
+        <p>
+            Todos os direitos reservados © 2026
+            <strong>Crops Control</strong>
+        </p>
+
+    </div>
+
+    <!-- Bootstrap -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+
+        /* ===================================
+        MOSTRAR SENHA
+        =================================== */
+
+        function mostrarSenha(){
+
+            const senha = document.getElementById('senha');
+
+            const icone = document.getElementById('iconeSenha');
+
+            if(senha.type === 'password'){
+
+                senha.type = 'text';
+
+                icone.classList.remove('bi-eye');
+
+                icone.classList.add('bi-eye-slash');
+
+            }else{
+
+                senha.type = 'password';
+
+                icone.classList.remove('bi-eye-slash');
+
+                icone.classList.add('bi-eye');
+            }
+        }
+
+        /* ===================================
+        LOADING BUTTON
+        =================================== */
+
+        document
+        .getElementById('formLogin')
+        .addEventListener('submit', function(){
+
+            document.getElementById('textoBotao').innerHTML = `
+
+                <span class="spinner-border spinner-border-sm"></span>
+
+                Entrando...
+            `;
+        });
+
+    </script>
+
+</body>
+
+</html>

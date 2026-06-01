@@ -1,0 +1,1046 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Agendamentos | Crops Gate{% endblock %}
+
+{% block content %}
+
+<style>
+
+/* ===================================
+BODY SPACE
+=================================== */
+
+.page-agendamento{
+
+    padding-top:20px;
+
+    padding-bottom:40px;
+}
+
+/* ===================================
+MENU TOPO STICKY
+=================================== */
+
+.menu-topo{
+
+    position:sticky;
+
+    top:0;
+
+    left:0;
+
+    width:100%;
+
+    z-index:1050;
+
+    background:#fff;
+
+    border-bottom:1px solid #e9ecef;
+
+    box-shadow:0 5px 20px rgba(0,0,0,0.08);
+
+    padding:12px 10px;
+}
+
+.menu-topo-container{
+
+    max-width:900px;
+
+    margin:0 auto;
+
+    display:flex;
+
+    justify-content:space-around;
+
+    align-items:center;
+}
+
+/* ===================================
+ITEM MENU
+=================================== */
+
+.menu-item{
+
+    display:flex;
+
+    flex-direction:column;
+
+    align-items:center;
+
+    justify-content:center;
+
+    text-decoration:none;
+
+    color:#6c757d;
+
+    font-size:11px;
+
+    font-weight:600;
+
+    gap:5px;
+
+    transition:0.3s;
+
+    min-width:60px;
+}
+
+.menu-item i{
+
+    font-size:22px;
+}
+
+/* ===================================
+ATIVO
+=================================== */
+
+.menu-item.active{
+
+    color:green;
+}
+
+.menu-item.active i{
+
+    background:green;
+
+    color:#fff;
+
+    width:44px;
+
+    height:44px;
+
+    border-radius:14px;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    box-shadow:0 5px 15px rgba(0,128,0,0.35);
+}
+
+/* ===================================
+HOVER
+=================================== */
+
+.menu-item:hover{
+
+    color:green;
+
+    transform:translateY(-2px);
+}
+
+/* ===================================
+CARD
+=================================== */
+
+.card-agendamento{
+
+    border:none;
+
+    border-radius:24px;
+
+    overflow:hidden;
+
+    box-shadow:0 10px 35px rgba(0,0,0,0.08);
+}
+
+/* ===================================
+HEADER
+=================================== */
+
+.header-agendamento{
+
+    background:linear-gradient(
+        135deg,
+        #0d6efd,
+        green
+    );
+
+    color:#fff;
+
+    padding:30px;
+}
+
+/* ===================================
+ICONE HEADER
+=================================== */
+
+.icone-header{
+
+    width:65px;
+
+    height:65px;
+
+    border-radius:50%;
+
+    background:#fff;
+
+    color:green;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    font-size:28px;
+}
+
+/* ===================================
+BOX HORARIO
+=================================== */
+
+.box-horario{
+
+    background:#f8f9fa;
+
+    border:1px solid #ececec;
+
+    border-radius:18px;
+
+    padding:18px;
+
+    margin-bottom:18px;
+}
+
+/* ===================================
+INPUTS
+=================================== */
+
+.form-control,
+.input-group-text,
+.form-select{
+
+    height:52px;
+
+    border-radius:12px;
+}
+
+textarea.form-control{
+
+    height:auto;
+}
+
+.input-group-text{
+
+    background:#fff;
+}
+
+/* ===================================
+BOTÃO
+=================================== */
+
+.btn-enviar{
+
+    height:58px;
+
+    border-radius:16px;
+
+    font-size:18px;
+
+    font-weight:700;
+}
+
+/* ===================================
+RESPONSIVO
+=================================== */
+
+@media(max-width:576px){
+
+    .header-agendamento{
+
+        padding:22px;
+    }
+
+    .icone-header{
+
+        width:55px;
+
+        height:55px;
+
+        font-size:24px;
+    }
+
+    .btn-enviar{
+
+        font-size:16px;
+    }
+
+    .menu-item{
+
+        font-size:10px;
+    }
+
+    .menu-item i{
+
+        font-size:20px;
+    }
+
+    .box-horario{
+
+        padding:14px;
+    }
+
+    .menu-topo{
+
+        padding:10px 5px;
+    }
+}
+
+</style>
+
+<!-- MENU -->
+<div class="menu-topo">
+
+    <div class="menu-topo-container">
+
+        <a href="/agendamentos" class="menu-item active">
+
+            <i class="bi bi-house-door-fill"></i>
+
+            <span>Home</span>
+
+        </a>
+
+        <a href="#" class="menu-item">
+
+            <i class="bi bi-card-list"></i>
+
+            <span>Minhas</span>
+
+        </a>
+
+        <a href="#" class="menu-item">
+
+            <i class="bi bi-person"></i>
+
+            <span>Perfil</span>
+
+        </a>
+
+        <form
+            method="POST"
+            action="{% url 'logout' %}"
+            class="m-0 p-0"
+        >
+
+            {% csrf_token %}
+
+            <button
+                type="submit"
+                class="menu-item text-danger border-0 bg-transparent"
+            >
+
+                <i class="bi bi-box-arrow-right"></i>
+
+                <span>Sair</span>
+
+            </button>
+
+        </form>
+
+    </div>
+
+</div>
+
+<div class="container-fluid py-4 page-agendamento">
+
+    <div class="row justify-content-center">
+
+        <div class="col-lg-8 col-xl-7">
+
+            <div class="card card-agendamento">
+
+                <!-- HEADER -->
+                <div class="header-agendamento">
+
+                    <div class="d-flex align-items-center gap-3">
+
+                        <div class="icone-header">
+
+                            <i class="bi bi-truck"></i>
+
+                        </div>
+
+                        <div>
+
+                            <h3 class="fw-bold mb-1">
+                                Nova Solicitação
+                            </h3>
+
+                            <p class="mb-0 opacity-75">
+                                Solicitação de Agendamento de Descarga
+                            </p>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <!-- BODY -->
+                <div class="card-body p-4">
+
+                    <form id="formAgendamento">
+
+                        {% csrf_token %}
+
+                        <!-- LOCAL DESCARGA -->
+                        <div class="mb-4">
+
+                            <label class="form-label fw-semibold">
+                                Local de Descarga *
+                            </label>
+
+                            <div class="input-group">
+
+                                <span class="input-group-text">
+                                    <i class="bi bi-geo-alt"></i>
+                                </span>
+
+                                <select
+                                    name="local_descarga"
+                                    class="form-select"
+                                    required
+                                >
+
+                                    <option value="">
+                                        Selecione o local de descarga
+                                    </option>
+
+                                    <option value="TIPN">1. TIPN | Porto Nacional</option>
+                                    <option value="TIP">2. TIP | Palmeirante</option>
+                                    <option value="TIUB">3. TIUB | Uberaba</option>
+                                    <option value="TRO">4. TRO | Terminal Rumo Rondonópolis</option>
+                                    <option value="TSS">5. TSS | Terminal Rumo São Simão</option>
+                                    <option value="TRV">6. TRV | Terminal Rumo Rio Verde</option>
+                                    <option value="TGG">7. TGG | Terminal de Guarujá</option>
+                                    <option value="BRF_RV">8. BRF - Rio Verde</option>
+                                    <option value="BRF_UB">9. BRF - Uberlândia</option>
+                                    <option value="BRF_CN">10. BRF - Campos Novos</option>
+                                    <option value="BRF_AM">11. BRF - Arroio do Meio</option>
+                                    <option value="BRF_CH">12. BRF - Chapecó</option>
+                                    <option value="BUNGE">13. Bunge - Maringá</option>
+                                    <option value="SFS">14. São Francisco do Sul</option>
+                                    <option value="TGRAO">15. Terminal T-Grão</option>
+                                    <option value="ROLANDIA">16. Rolândia</option>
+                                    <option value="PINHALZINHO">17. Pinhalzinho</option>
+                                    <option value="PARANAGUA">18. Paranaguá</option>
+                                    <option value="BARCARENA">19. Barcarena</option>
+                                    <option value="ITAITUBA">20. Itaituba</option>
+                                    <option value="OUTRO">21. Outro</option>
+
+                                </select>
+
+                            </div>
+
+                        </div>
+
+                        <!-- PLACA -->
+                        <div class="mb-3">
+
+                            <label class="form-label fw-semibold">
+                                Placa do Cavalo *
+                            </label>
+
+                            <div class="input-group">
+
+                                <span class="input-group-text">
+                                    <i class="bi bi-truck"></i>
+                                </span>
+
+                                <input
+                                    type="text"
+                                    id="placa_cavalo"
+                                    name="placa_cavalo"
+                                    class="form-control"
+                                    placeholder="ABC1D23"
+                                    required
+                                >
+
+                            </div>
+
+                        </div>
+
+                        <!-- CPF -->
+                        <div class="mb-3">
+
+                            <label class="form-label fw-semibold">
+                                CPF do Motorista *
+                            </label>
+
+                            <div class="input-group">
+
+                                <span class="input-group-text">
+                                    <i class="bi bi-person"></i>
+                                </span>
+
+                                <input
+                                    type="text"
+                                    id="cpf"
+                                    name="cpf"
+                                    class="form-control"
+                                    placeholder="000.000.000-00"
+                                    required
+                                >
+
+                            </div>
+
+                        </div>
+
+                        <!-- MOTORISTA -->
+                        <div class="mb-3">
+
+                            <label class="form-label fw-semibold">
+                                Nome do Motorista *
+                            </label>
+
+                            <div class="input-group">
+
+                                <span class="input-group-text">
+                                    <i class="bi bi-person-badge"></i>
+                                </span>
+
+                                <input
+                                    type="text"
+                                    id="nome_motorista"
+                                    name="nome_motorista"
+                                    class="form-control"
+                                    placeholder="Nome do motorista"
+                                    required
+                                >
+
+                            </div>
+
+                        </div>
+
+                        <!-- CELULAR -->
+                        <div class="mb-4">
+
+                            <label class="form-label fw-semibold">
+                                Celular do Motorista *
+                            </label>
+
+                            <div class="input-group">
+
+                                <span class="input-group-text">
+                                    <i class="bi bi-telephone"></i>
+                                </span>
+
+                                <input
+                                    type="text"
+                                    id="telefone"
+                                    name="telefone"
+                                    class="form-control"
+                                    placeholder="(00) 00000-0000"
+                                    required
+                                >
+
+                            </div>
+
+                        </div>
+
+                        <!-- OPÇÃO 1 -->
+                        <div class="box-horario">
+
+                            <h5 class="fw-bold text-primary mb-3">
+                                Opção 1 *
+                            </h5>
+
+                            <div class="row g-2">
+
+                                <div class="col-6">
+
+                                    <label class="form-label fw-semibold small">
+                                        Data Desejada
+                                    </label>
+
+                                    <input
+                                        type="date"
+                                        name="data_opcao_1"
+                                        class="form-control"
+                                        required
+                                    >
+
+                                </div>
+
+                                <div class="col-6">
+
+                                    <label class="form-label fw-semibold small">
+                                        Horário Desejado
+                                    </label>
+
+                                    <select
+                                        name="horario_opcao_1"
+                                        class="form-select"
+                                        required
+                                    >
+
+                                        <option value="">
+                                            Selecione
+                                        </option>
+
+                                        {% for h in "x"|ljust:24 %}
+
+                                            <option value="{{ forloop.counter0|stringformat:'02d' }}:00">
+                                                {{ forloop.counter0|stringformat:'02d' }}:00
+                                            </option>
+
+                                        {% endfor %}
+
+                                    </select>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                        <!-- OPÇÃO 2 -->
+                        <div class="box-horario">
+
+                            <h5 class="fw-bold text-success mb-3">
+                                Opção 2
+                            </h5>
+
+                            <div class="row g-2">
+
+                                <div class="col-6">
+
+                                    <label class="form-label fw-semibold small">
+                                        Data Desejada
+                                    </label>
+
+                                    <input
+                                        type="date"
+                                        name="data_opcao_2"
+                                        class="form-control"
+                                    >
+
+                                </div>
+
+                                <div class="col-6">
+
+                                    <label class="form-label fw-semibold small">
+                                        Horário Desejado
+                                    </label>
+
+                                    <select
+                                        name="horario_opcao_2"
+                                        class="form-select"
+                                    >
+
+                                        <option value="">
+                                            Selecione
+                                        </option>
+
+                                        {% for h in "x"|ljust:24 %}
+
+                                            <option value="{{ forloop.counter0|stringformat:'02d' }}:00">
+                                                {{ forloop.counter0|stringformat:'02d' }}:00
+                                            </option>
+
+                                        {% endfor %}
+
+                                    </select>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                        <!-- OPÇÃO 3 -->
+                        <div class="box-horario">
+
+                            <h5 class="fw-bold text-warning mb-3">
+                                Opção 3
+                            </h5>
+
+                            <div class="row g-2">
+
+                                <div class="col-6">
+
+                                    <label class="form-label fw-semibold small">
+                                        Data Desejada
+                                    </label>
+
+                                    <input
+                                        type="date"
+                                        name="data_opcao_3"
+                                        class="form-control"
+                                    >
+
+                                </div>
+
+                                <div class="col-6">
+
+                                    <label class="form-label fw-semibold small">
+                                        Horário Desejado
+                                    </label>
+
+                                    <select
+                                        name="horario_opcao_3"
+                                        class="form-select"
+                                    >
+
+                                        <option value="">
+                                            Selecione
+                                        </option>
+
+                                        {% for h in "x"|ljust:24 %}
+
+                                            <option value="{{ forloop.counter0|stringformat:'02d' }}:00">
+                                                {{ forloop.counter0|stringformat:'02d' }}:00
+                                            </option>
+
+                                        {% endfor %}
+
+                                    </select>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                        <!-- OBS -->
+                        <div class="mb-4">
+
+                            <label class="form-label fw-semibold">
+                                Observação
+                            </label>
+
+                            <textarea
+                                name="observacao"
+                                class="form-control"
+                                rows="4"
+                                placeholder="Digite alguma observação..."
+                            ></textarea>
+
+                        </div>
+
+                        <!-- ALERTA -->
+                        <div class="alert alert-primary border-0 rounded-4">
+
+                            <div class="d-flex gap-3">
+
+                                <i class="bi bi-info-circle-fill fs-4"></i>
+
+                                <div>
+
+                                    <strong>Importante</strong>
+
+                                    <p class="mb-0 mt-1">
+                                        Após enviar a solicitação, ela será analisada pelo supervisor responsável.
+                                    </p>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                        <!-- BOTÃO -->
+                        <button
+                            type="submit"
+                            class="btn btn-primary w-100 btn-enviar"
+                        >
+
+                            <i class="bi bi-send"></i>
+
+                            Enviar Solicitação
+
+                        </button>
+
+                    </form>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- JQUERY -->
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
+<!-- SWEET ALERT -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<!-- IMASK -->
+<script src="https://unpkg.com/imask"></script>
+
+<script>
+
+$(document).ready(function(){
+
+    // ==========================================
+    // MÁSCARAS
+    // ==========================================
+
+    IMask(
+        document.getElementById('cpf'),
+        {
+            mask:'000.000.000-00'
+        }
+    );
+
+    IMask(
+        document.getElementById('telefone'),
+        {
+            mask:'(00) 00000-0000'
+        }
+    );
+
+    // ==========================================
+    // PLACA MERCOSUL E ANTIGA
+    // ==========================================
+
+    $('#placa_cavalo').on('input', function(){
+
+        let valor = $(this).val().toUpperCase();
+
+        valor = valor.replace(/[^A-Z0-9]/g,'');
+
+        if(valor.length > 7){
+
+            valor = valor.substring(0,7);
+        }
+
+        // FORMATO ANTIGO
+        // ABC1234 -> ABC-1234
+
+        if(
+            /^[A-Z]{3}[0-9]{4}$/.test(valor)
+        ){
+
+            valor = valor.replace(
+                /^([A-Z]{3})([0-9]{4})$/,
+                '$1-$2'
+            );
+        }
+
+        // FORMATO MERCOSUL
+        // ABC1D23 -> ABC-1D23
+
+        else if(
+            /^[A-Z]{3}[0-9][A-Z][0-9]{2}$/.test(valor)
+        ){
+
+            valor = valor.replace(
+                /^([A-Z]{3})([0-9][A-Z][0-9]{2})$/,
+                '$1-$2'
+            );
+        }
+
+        $(this).val(valor);
+
+    });
+
+    // ==========================================
+    // DATA MÍNIMA
+    // ==========================================
+
+    const hoje = new Date().toISOString().split('T')[0];
+
+    $('[name=data_opcao_1]').attr('min', hoje);
+    $('[name=data_opcao_2]').attr('min', hoje);
+    $('[name=data_opcao_3]').attr('min', hoje);
+
+    // ==========================================
+    // BUSCAR MOTORISTA
+    // ==========================================
+
+    $('#cpf').blur(function(){
+
+        let cpf = $(this).val();
+
+        cpf = cpf.replace(/\D/g,'');
+
+        if(cpf.length < 11){
+
+            return;
+        }
+
+        $.ajax({
+
+            url:"{% url 'buscar_motorista' %}",
+
+            type:'GET',
+
+            data:{
+                cpf:$('#cpf').val()
+            },
+
+            success:function(response){
+
+                if(response.success){
+
+                    $('#nome_motorista').val(response.nome);
+
+                    $('#telefone').val(response.telefone);
+
+                }
+
+            }
+
+        });
+
+    });
+
+    // ==========================================
+    // SUBMIT
+    // ==========================================
+
+    $('#formAgendamento').submit(function(e){
+
+        e.preventDefault();
+
+        let botao = $('.btn-enviar');
+
+        botao.prop('disabled', true);
+
+        botao.html(`
+            <span class="spinner-border spinner-border-sm"></span>
+            Enviando...
+        `);
+
+        // ==========================================
+        // VALIDAR PARES DATA/HORÁRIO
+        // ==========================================
+
+        for(let i = 1; i <= 3; i++){
+
+            let data = $(`[name=data_opcao_${i}]`).val();
+
+            let horario = $(`[name=horario_opcao_${i}]`).val();
+
+            if(
+                (data && !horario) ||
+                (!data && horario)
+            ){
+
+                Swal.fire({
+
+                    icon:'warning',
+
+                    title:'Campos incompletos',
+
+                    text:`Preencha data e horário da Opção ${i}.`,
+
+                    confirmButtonColor:'#dc3545'
+
+                });
+
+                botao.prop('disabled', false);
+
+                botao.html(`
+                    <i class="bi bi-send"></i>
+                    Enviar Solicitação
+                `);
+
+                return;
+            }
+        }
+
+        // ==========================================
+        // AJAX
+        // ==========================================
+
+        $.ajax({
+
+            url: "{% url 'criar_agendamento' %}",
+
+            type: 'POST',
+
+            data: $(this).serialize(),
+
+            headers: {
+
+                'X-CSRFToken': $('[name=csrfmiddlewaretoken]').val()
+
+            },
+
+            success: function(response){
+
+                if(response.success){
+
+                    Swal.fire({
+
+                        icon:'success',
+
+                        title:'Solicitação enviada',
+
+                        text:response.message,
+
+                        confirmButtonColor:'#198754'
+
+                    });
+
+                    $('#formAgendamento')[0].reset();
+
+                }else{
+
+                    Swal.fire({
+
+                        icon:'error',
+
+                        title:'Erro',
+
+                        text:response.message,
+
+                        confirmButtonColor:'#dc3545'
+
+                    });
+
+                }
+
+                botao.prop('disabled', false);
+
+                botao.html(`
+                    <i class="bi bi-send"></i>
+                    Enviar Solicitação
+                `);
+
+            },
+
+            error:function(xhr){
+
+                console.log(xhr.responseText);
+
+                Swal.fire({
+
+                    icon:'error',
+
+                    title:'Erro interno',
+
+                    text:'Falha ao enviar solicitação.',
+
+                    confirmButtonColor:'#dc3545'
+
+                });
+
+                botao.prop('disabled', false);
+
+                botao.html(`
+                    <i class="bi bi-send"></i>
+                    Enviar Solicitação
+                `);
+
+            }
+
+        });
+
+    });
+
+});
+
+</script>
+
+{% endblock %}

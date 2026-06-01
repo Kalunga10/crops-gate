@@ -1,0 +1,1419 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Painel de Solicitações | Crops Gate{% endblock %}
+
+{% block content %}
+
+<style>
+
+/* =========================================
+BODY
+========================================= */
+
+body{
+
+    background:#f4f6f9;
+}
+
+/* =========================================
+PAGE
+========================================= */
+
+.page-painel{
+
+    padding:25px;
+}
+
+/* =========================================
+TOPBAR
+========================================= */
+
+.topbar{
+
+    background:#fff;
+
+    border-radius:20px;
+
+    padding:18px 25px;
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    margin-bottom:25px;
+
+    box-shadow:0 2px 10px rgba(0,0,0,0.05);
+}
+
+.logo-sistema{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:18px;
+}
+
+.logo-sistema img{
+
+    height:60px;
+
+    object-fit:contain;
+}
+
+.topbar-title{
+
+    font-size:28px;
+
+    font-weight:800;
+
+    color:#1f2937;
+}
+
+.topbar-subtitle{
+
+    color:#6b7280;
+
+    font-size:14px;
+}
+
+/* =========================================
+MENU
+========================================= */
+
+.menu-superior{
+
+    display:flex;
+
+    gap:12px;
+
+    align-items:center;
+}
+
+.menu-btn{
+
+    border:none;
+
+    background:#f8fafc;
+
+    width:45px;
+
+    height:45px;
+
+    border-radius:14px;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    color:#374151;
+
+    transition:0.3s;
+}
+
+.menu-btn:hover{
+
+    background:#0d6efd;
+
+    color:#fff;
+}
+
+/* =========================================
+FILTROS
+========================================= */
+
+.box-filtros{
+
+    background:#fff;
+
+    border-radius:20px;
+
+    padding:20px;
+
+    margin-bottom:25px;
+
+    box-shadow:0 2px 10px rgba(0,0,0,0.05);
+}
+
+/* =========================================
+KPIS
+========================================= */
+
+.kpi-card{
+
+    background:#fff;
+
+    border-radius:20px;
+
+    padding:22px;
+
+    box-shadow:0 2px 10px rgba(0,0,0,0.05);
+
+    height:100%;
+}
+
+.kpi-icon{
+
+    width:55px;
+
+    height:55px;
+
+    border-radius:16px;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    font-size:24px;
+
+    margin-bottom:15px;
+}
+
+.kpi-title{
+
+    color:#6b7280;
+
+    font-size:14px;
+
+    margin-bottom:6px;
+}
+
+.kpi-value{
+
+    font-size:32px;
+
+    font-weight:800;
+
+    color:#111827;
+}
+
+/* =========================================
+TABLE
+========================================= */
+
+.box-tabela{
+
+    background:#fff;
+
+    border-radius:20px;
+
+    overflow:hidden;
+
+    box-shadow:0 2px 10px rgba(0,0,0,0.05);
+}
+
+.table{
+
+    margin:0;
+}
+
+.table thead{
+
+    background:#f8fafc;
+}
+
+.table thead th{
+
+    border:none;
+
+    padding:18px;
+
+    font-size:13px;
+
+    font-weight:700;
+
+    color:#374151;
+}
+
+.table tbody td{
+
+    padding:18px;
+
+    vertical-align:middle;
+
+    border-color:#f1f5f9;
+}
+
+.table tbody tr:hover{
+
+    background:#f9fafb;
+}
+
+/* =========================================
+STATUS
+========================================= */
+
+.badge-status{
+
+    padding:8px 12px;
+
+    border-radius:12px;
+
+    font-size:12px;
+
+    font-weight:700;
+}
+
+.status-pendente{
+
+    background:#fff7ed;
+
+    color:#ea580c;
+}
+
+.status-analise{
+
+    background:#eff6ff;
+
+    color:#2563eb;
+}
+
+.status-finalizado{
+
+    background:#ecfdf5;
+
+    color:#16a34a;
+}
+
+/* =========================================
+BOTÕES
+========================================= */
+
+.btn-action{
+
+    border:none;
+
+    padding:10px 14px;
+
+    border-radius:12px;
+
+    font-size:13px;
+
+    font-weight:700;
+
+    transition:0.3s;
+}
+
+.btn-whatsapp{
+
+    background:#16a34a;
+
+    color:#fff;
+}
+
+.btn-detalhes{
+
+    background:#eff6ff;
+
+    color:#2563eb;
+}
+
+.btn-finalizar{
+
+    background:#16a34a;
+
+    color:#fff;
+}
+
+.btn-pendente{
+
+    background:#ea580c;
+
+    color:#fff;
+}
+
+/* =========================================
+MODAL
+========================================= */
+
+.modal-content{
+
+    border:none;
+
+    border-radius:20px;
+}
+
+.modal-header{
+
+    border-bottom:1px solid #f1f5f9;
+}
+
+.modal-footer{
+
+    border-top:1px solid #f1f5f9;
+}
+
+/* =========================================
+RESPONSIVO
+========================================= */
+
+@media(max-width:768px){
+
+    .topbar{
+
+        flex-direction:column;
+
+        align-items:flex-start;
+
+        gap:15px;
+    }
+
+    .logo-sistema{
+
+        flex-direction:column;
+
+        align-items:flex-start;
+    }
+
+    .table-responsive{
+
+        overflow-x:auto;
+    }
+}
+
+</style>
+
+<div class="container-fluid page-painel">
+
+    <!-- TOPBAR -->
+    <div class="topbar">
+
+        <div class="logo-sistema">
+
+            <img
+                src="{% static 'img/logo.png' %}"
+                alt="Logo Crops Gate"
+            >
+
+            <div>
+
+                <div class="topbar-title">
+                    Solicitações de Agendamento
+                </div>
+
+                <div class="topbar-subtitle">
+                    Painel operacional do Crops Gate
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="menu-superior">
+
+            <button class="menu-btn">
+                <i class="bi bi-house"></i>
+            </button>
+
+            <button class="menu-btn">
+                <i class="bi bi-bell"></i>
+            </button>
+
+            <button class="menu-btn">
+                <i class="bi bi-person"></i>
+            </button>
+
+            <form
+                method="POST"
+                action="{% url 'logout' %}"
+            >
+                {% csrf_token %}
+
+                <button
+                    type="submit"
+                    class="menu-btn text-danger"
+                >
+                    <i class="bi bi-box-arrow-right"></i>
+                </button>
+
+            </form>
+
+        </div>
+
+    </div>
+
+    <!-- KPIS -->
+    <div class="row g-4 mb-4">
+
+        <div class="col-md-4">
+
+            <div class="kpi-card">
+
+                <div
+                    class="kpi-icon"
+                    style="background:#fff7ed;color:#ea580c;"
+                >
+                    <i class="bi bi-folder2-open"></i>
+                </div>
+
+                <div class="kpi-title">
+                    Abertos
+                </div>
+
+                <div
+                    class="kpi-value"
+                    id="kpiPendentes"
+                >
+                    0
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="col-md-4">
+
+            <div class="kpi-card">
+
+                <div
+                    class="kpi-icon"
+                    style="background:#eff6ff;color:#2563eb;"
+                >
+                    <i class="bi bi-search"></i>
+                </div>
+
+                <div class="kpi-title">
+                    Em Análise
+                </div>
+
+                <div
+                    class="kpi-value"
+                    id="kpiAnalise"
+                >
+                    0
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="col-md-4">
+
+            <div class="kpi-card">
+
+                <div
+                    class="kpi-icon"
+                    style="background:#ecfdf5;color:#16a34a;"
+                >
+                    <i class="bi bi-check-circle"></i>
+                </div>
+
+                <div class="kpi-title">
+                    Finalizados
+                </div>
+
+                <div
+                    class="kpi-value"
+                    id="kpiFinalizados"
+                >
+                    0
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- ABAS -->
+    <div class="box-tabela">
+
+        <ul class="nav nav-tabs p-3 border-0">
+            <li class="nav-item">
+                <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#abaAbertos">
+                    Abertos
+                </button>
+            </li>
+
+            <li class="nav-item">
+                <button class="nav-link" data-bs-toggle="tab" data-bs-target="#abaAnalise">
+                    Em Análise
+                </button>
+            </li>
+
+            <li class="nav-item">
+                <button class="nav-link" data-bs-toggle="tab" data-bs-target="#abaFinalizados">
+                    Finalizados
+                </button>
+            </li>
+        </ul>
+
+        <div class="tab-content">
+
+            <div class="tab-pane fade show active" id="abaAbertos">
+                <div class="table-responsive">
+                    <table class="table align-middle">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Motorista</th>
+                                <th>Placa</th>
+                                <th>Local</th>
+                                <th>Solicitação</th>
+                                <th>Status</th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tabelaAbertos"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="tab-pane fade" id="abaAnalise">
+                <div class="table-responsive">
+                    <table class="table align-middle">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Motorista</th>
+                                <th>Placa</th>
+                                <th>Local</th>
+                                <th>Solicitação</th>
+                                <th>Status</th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tabelaAnalise"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="tab-pane fade" id="abaFinalizados">
+                <div class="table-responsive">
+                    <table class="table align-middle">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Motorista</th>
+                                <th>Placa</th>
+                                <th>Local</th>
+                                <th>Solicitação</th>
+                                <th>Status</th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tabelaFinalizados"></tbody>
+                    </table>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- MODAL WHATSAPP -->
+<div
+    class="modal fade"
+    id="modalWhatsapp"
+    tabindex="-1"
+>
+
+    <div class="modal-dialog">
+
+        <div class="modal-content">
+
+            <div class="modal-header">
+
+                <h5 class="modal-title">
+                    Enviar Mensagem WhatsApp
+                </h5>
+
+                <button
+                    type="button"
+                    class="btn-close"
+                    data-bs-dismiss="modal"
+                ></button>
+
+            </div>
+
+            <div class="modal-body">
+
+                <input type="hidden" id="detAgendamentoId">
+
+                <input
+                    type="hidden"
+                    id="telefoneWhatsapp"
+                >
+
+                <label class="form-label">
+                    Tipo de Mensagem
+                </label>
+
+                <select
+                    class="form-select mb-3"
+                    id="tipoMensagem"
+                    onchange="gerarMensagem()"
+                >
+
+                    <option value="">
+                        Selecione
+                    </option>
+
+                    <option value="confirmacao">
+                        Confirmação
+                    </option>
+
+                    <option value="analise">
+                        Em análise
+                    </option>
+
+                    <option value="finalizado">
+                        Finalizado
+                    </option>
+
+                </select>
+
+                <label class="form-label">
+                    Mensagem
+                </label>
+
+                <textarea
+                    class="form-control"
+                    rows="6"
+                    id="mensagemWhatsapp"
+                ></textarea>
+
+            </div>
+
+            <div class="modal-footer">
+
+                <button
+                    type="button"
+                    class="btn btn-secondary"
+                    data-bs-dismiss="modal"
+                >
+                    Fechar
+                </button>
+
+                <button
+                    type="button"
+                    class="btn btn-success"
+                    onclick="abrirWhatsapp()"
+                >
+                    Abrir WhatsApp
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- MODAL DETALHES -->
+<div
+    class="modal fade"
+    id="modalDetalhes"
+    tabindex="-1"
+>
+
+    <div class="modal-dialog modal-xl">
+
+        <div class="modal-content">
+
+            <div class="modal-header">
+
+                <h5 class="modal-title">
+                    Detalhes do Agendamento
+                </h5>
+
+                <button
+                    type="button"
+                    class="btn-close"
+                    data-bs-dismiss="modal"
+                ></button>
+
+            </div>
+
+            <div class="modal-body">
+
+                <!-- STATUS -->
+                <div class="mb-4 text-center">
+
+                    <span
+                        class="badge-status status-pendente"
+                        id="badgeStatusModal"
+                    >
+                        ABERTO
+                    </span>
+
+                </div>
+
+                <!-- DADOS -->
+                <div class="row g-3">
+
+                    <div class="col-md-4">
+
+                        <label class="form-label">
+                            Motorista
+                        </label>
+
+                        <input
+                            type="text"
+                            class="form-control"
+                            id="detMotorista"
+                            readonly
+                        >
+
+                    </div>
+
+                    <div class="col-md-4">
+
+                        <label class="form-label">
+                            CPF
+                        </label>
+
+                        <input
+                            type="text"
+                            class="form-control"
+                            id="detCpf"
+                            readonly
+                        >
+
+                    </div>
+
+                    <div class="col-md-4">
+
+                        <label class="form-label">
+                            Telefone
+                        </label>
+
+                        <input
+                            type="text"
+                            class="form-control"
+                            id="detTelefone"
+                            readonly
+                        >
+
+                    </div>
+
+                    <div class="col-md-4">
+
+                        <label class="form-label">
+                            Placa
+                        </label>
+
+                        <input
+                            type="text"
+                            class="form-control"
+                            id="detPlaca"
+                            readonly
+                        >
+
+                    </div>
+
+                    <div class="col-md-8">
+
+                        <label class="form-label">
+                            Local Descarga
+                        </label>
+
+                        <input
+                            type="text"
+                            class="form-control"
+                            id="detLocal"
+                            readonly
+                        >
+
+                    </div>
+
+                </div>
+
+                <!-- OPÇÕES -->
+                <hr class="my-4">
+
+                <h6 class="fw-bold mb-3">
+                    Opções de Agendamento
+                </h6>
+
+                <div class="row g-3">
+
+                    <div class="col-md-4">
+
+                        <div class="border rounded-4 p-3 h-100">
+
+                            <small class="text-muted">
+                                Opção 1
+                            </small>
+
+                            <div
+                                class="fw-bold mt-2"
+                                id="detOpcao1"
+                            >
+                                -
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    <div class="col-md-4">
+
+                        <div class="border rounded-4 p-3 h-100">
+
+                            <small class="text-muted">
+                                Opção 2
+                            </small>
+
+                            <div
+                                class="fw-bold mt-2"
+                                id="detOpcao2"
+                            >
+                                -
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    <div class="col-md-4">
+
+                        <div class="border rounded-4 p-3 h-100">
+
+                            <small class="text-muted">
+                                Opção 3
+                            </small>
+
+                            <div
+                                class="fw-bold mt-2"
+                                id="detOpcao3"
+                            >
+                                -
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <!-- OBSERVAÇÃO -->
+                <hr class="my-4">
+
+                <div class="mb-4">
+
+                    <label class="form-label fw-bold">
+                        Observação
+                    </label>
+
+                    <textarea
+                        class="form-control"
+                        rows="4"
+                        id="detObservacao"
+                        readonly
+                    ></textarea>
+
+                </div>
+
+                <!-- STATUS -->
+                <div class="mb-4">
+
+                    <label class="form-label fw-bold">
+                        Alterar Status
+                    </label>
+
+                    <select
+                        class="form-select"
+                        id="novoStatus"
+                    >
+
+                        <option value="ABERTO">
+                            ABERTO
+                        </option>
+
+                        <option value="EM_ANALISE">
+                            EM ANÁLISE
+                        </option>
+
+                        <option value="FINALIZADO">
+                            FINALIZADO
+                        </option>
+
+                    </select>
+
+                </div>
+
+                <!-- MENSAGEM -->
+                <div>
+
+                    <label class="form-label fw-bold">
+                        Mensagem Operacional
+                    </label>
+
+                    <textarea
+                        class="form-control"
+                        rows="5"
+                        id="mensagemOperacional"
+                    ></textarea>
+
+                </div>
+
+                <div class="mt-4">
+
+                    <label class="form-label fw-bold">
+                        Motivo da Alteração
+                    </label>
+
+                    <textarea
+                        class="form-control"
+                        rows="4"
+                        id="motivoAlteracao"
+                    ></textarea>
+
+                </div>
+
+            </div>
+
+            <div class="modal-footer">
+
+                <button
+                    type="button"
+                    class="btn btn-secondary"
+                    data-bs-dismiss="modal"
+                >
+                    Fechar
+                </button>
+
+                <button
+                    type="button"
+                    class="btn btn-success"
+                    onclick="salvarStatus()"
+                >
+                    Salvar Alterações
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
+<script>
+
+$(document).ready(function(){
+
+    carregarAgendamentos();
+
+    setInterval(function(){
+
+        carregarAgendamentos();
+
+    }, 5000);
+
+});
+
+// ======================================
+// CARREGAR AGENDAMENTOS
+// ======================================
+
+function carregarAgendamentos(){
+
+    $.ajax({
+
+        url:"{% url 'listar_agendamentos' %}",
+
+        type:"GET",
+
+        success:function(response){
+
+            let htmlAbertos = '';
+            let htmlAnalise = '';
+            let htmlFinalizados = '';
+
+            let abertos = 0;
+            let analise = 0;
+            let finalizados = 0;
+
+            response.agendamentos.forEach(function(item){
+
+                let statusClass = 'status-pendente';
+
+                if(item.status == 'ABERTO'){
+
+                    statusClass = 'status-pendente';
+
+                    abertos++;
+
+                }
+
+                if(item.status == 'EM_ANALISE'){
+
+                    statusClass = 'status-analise';
+
+                    analise++;
+
+                }
+
+                if(item.status == 'FINALIZADO'){
+
+                    statusClass = 'status-finalizado';
+
+                    finalizados++;
+
+                }
+
+                // ======================================
+                // TRATAMENTO STRINGS
+                // ======================================
+
+                let nomeMotorista = String(item.nome_motorista).replace(/'/g, "\\'");
+                let cpfMotorista = String(item.cpf_motorista).replace(/'/g, "\\'");
+                let telefoneMotorista = String(item.telefone_motorista).replace(/'/g, "\\'");
+                let placaCavalo = String(item.placa_cavalo).replace(/'/g, "\\'");
+                let localDescarga = String(item.local_descarga).replace(/'/g, "\\'");
+                let status = String(item.status).replace(/'/g, "\\'");
+                let observacao = String(item.observacao).replace(/'/g, "\\'");
+
+                let opcao1 = `${item.data_opcao_1} ${item.horario_opcao_1}`;
+                let opcao2 = `${item.data_opcao_2} ${item.horario_opcao_2}`;
+                let opcao3 = `${item.data_opcao_3} ${item.horario_opcao_3}`;
+
+                // ======================================
+                // HTML
+                // ======================================
+
+                let linha = `
+
+                <tr>
+
+                    <td>#${item.id}</td>
+
+                    <td>
+                        <strong>${item.nome_motorista}</strong>
+                    </td>
+
+                    <td>${item.placa_cavalo}</td>
+
+                    <td>${item.local_descarga}</td>
+
+                    <td>
+                        ${item.data_cadastro}
+                        <br>
+                        <small>${item.hora_cadastro}</small>
+                    </td>
+
+                    <td>
+
+                        <span class="badge-status ${statusClass}">
+                            ${item.status}
+                        </span>
+
+                    </td>
+
+                    <td>
+
+                        <div class="d-flex gap-2">
+
+                            <!-- WHATSAPP -->
+
+                            <button
+                                class="btn-action btn-whatsapp"
+                                data-bs-toggle="modal"
+                                data-bs-target="#modalWhatsapp"
+                                onclick="setarWhatsapp('${telefoneMotorista}')"
+                            >
+                                <i class="bi bi-whatsapp"></i>
+                            </button>
+
+                            <!-- DETALHES -->
+
+                            <button
+                                class="btn-action btn-detalhes"
+                                data-bs-toggle="modal"
+                                data-bs-target="#modalDetalhes"
+                                onclick="abrirDetalhes(
+                                    '${item.id}',
+                                    '${nomeMotorista}',
+                                    '${cpfMotorista}',
+                                    '${telefoneMotorista}',
+                                    '${placaCavalo}',
+                                    '${localDescarga}',
+                                    '${status}',
+                                    '${opcao1}',
+                                    '${opcao2}',
+                                    '${opcao3}',
+                                    \`${observacao}\`,
+                                    \`${item.mensagem_operacional || ''}\`,
+                                    \`${item.motivo_alteracao_status || ''}\`
+                                )"
+                            >
+                                Detalhes
+                            </button>
+
+                        </div>
+
+                    </td>
+
+                </tr>
+
+                `;
+
+                if(item.status == 'ABERTO'){ htmlAbertos += linha; }
+                if(item.status == 'EM_ANALISE'){ htmlAnalise += linha; }
+                if(item.status == 'FINALIZADO'){ htmlFinalizados += linha; }
+
+            });
+
+            $('#tabelaAbertos').html(htmlAbertos);
+            $('#tabelaAnalise').html(htmlAnalise);
+            $('#tabelaFinalizados').html(htmlFinalizados);
+
+            $('#kpiPendentes').html(abertos);
+
+            $('#kpiAnalise').html(analise);
+
+            $('#kpiFinalizados').html(finalizados);
+
+        }
+
+    });
+
+}
+
+// ======================================
+// ABRIR DETALHES
+// ======================================
+
+function abrirDetalhes(
+    id,
+    motorista,
+    cpf,
+    telefone,
+    placa,
+    local,
+    status,
+    opcao1,
+    opcao2,
+    opcao3,
+    observacao,
+    mensagemOperacional,
+    motivoAlteracao
+){
+
+    // ID
+    $('#detAgendamentoId').val(id);
+
+    // DADOS
+    $('#detMotorista').val(motorista);
+    $('#detCpf').val(cpf);
+    $('#detTelefone').val(telefone);
+    $('#detPlaca').val(placa);
+    $('#detLocal').val(local);
+
+    // OPÇÕES
+    $('#detOpcao1').html(opcao1);
+    $('#detOpcao2').html(opcao2);
+    $('#detOpcao3').html(opcao3);
+
+    // OBSERVAÇÃO
+    $('#detObservacao').val(observacao);
+
+    $('#mensagemOperacional').val(mensagemOperacional || '');
+    $('#motivoAlteracao').val(motivoAlteracao || '');
+
+    // BADGE
+    let badge = $('#badgeStatusModal');
+
+    badge.removeClass(
+        'status-pendente status-analise status-finalizado'
+    );
+
+    if(status == 'ABERTO'){
+
+        badge.addClass('status-pendente');
+
+    }
+
+    if(status == 'EM_ANALISE'){
+
+        badge.addClass('status-analise');
+
+    }
+
+    if(status == 'FINALIZADO'){
+
+        badge.addClass('status-finalizado');
+
+    }
+
+    badge.html(status);
+
+    // =====================================
+    // REGRAS DE TRANSIÇÃO DE STATUS
+    // =====================================
+
+    let opcoes = '';
+
+    if(status == 'ABERTO'){
+
+        opcoes = `
+            <option value="ABERTO" selected>
+                ABERTO
+            </option>
+
+            <option value="EM_ANALISE">
+                EM ANÁLISE
+            </option>
+
+            <option value="FINALIZADO">
+                FINALIZADO
+            </option>
+        `;
+    }
+
+    if(status == 'EM_ANALISE'){
+
+        opcoes = `
+            <option value="EM_ANALISE" selected>
+                EM ANÁLISE
+            </option>
+
+            <option value="FINALIZADO">
+                FINALIZADO
+            </option>
+        `;
+    }
+
+    if(status == 'FINALIZADO'){
+
+        opcoes = `
+            <option value="FINALIZADO" selected>
+                FINALIZADO
+            </option>
+        `;
+    }
+
+    $('#novoStatus').html(opcoes);
+
+}
+
+// ======================================
+// SALVAR STATUS
+// ======================================
+
+function salvarStatus(){
+
+    let id = $('#detAgendamentoId').val();
+
+    let status = $('#novoStatus').val();
+
+    $.ajax({
+
+        url: "{% url 'alterar_status_agendamento' %}",
+
+        type: "POST",
+
+        data: {
+
+            'id': id,
+
+            'status': status,
+
+            'mensagem_operacional': $('#mensagemOperacional').val(),
+
+            'motivo_alteracao_status': $('#motivoAlteracao').val(),
+
+            'csrfmiddlewaretoken': '{{ csrf_token }}'
+
+        },
+
+        success:function(response){
+
+            if(response.success){
+
+                carregarAgendamentos();
+
+                $('#modalDetalhes').modal('hide');
+
+                alert(response.message);
+
+            }
+            else{
+
+                alert(response.message);
+
+            }
+
+        },
+
+        error:function(){
+
+            alert('Erro ao atualizar status.');
+
+        }
+
+    });
+
+}
+
+// ======================================
+// WHATSAPP
+// ======================================
+
+function setarWhatsapp(telefone){
+
+    $('#telefoneWhatsapp').val(telefone);
+
+}
+
+function gerarMensagem(){
+
+    let tipo = $('#tipoMensagem').val();
+
+    let mensagem = '';
+
+    if(tipo == 'confirmacao'){
+
+        mensagem = 'Olá, seu agendamento foi confirmado com sucesso.';
+
+    }
+
+    if(tipo == 'analise'){
+
+        mensagem = 'Olá, seu agendamento está em análise.';
+
+    }
+
+    if(tipo == 'finalizado'){
+
+        mensagem = 'Olá, seu atendimento foi finalizado com sucesso.';
+
+    }
+
+    $('#mensagemWhatsapp').val(mensagem);
+
+}
+
+function abrirWhatsapp(){
+
+    let telefone = $('#telefoneWhatsapp').val();
+
+    telefone = telefone.replace(/\D/g, '');
+
+    let mensagem = $('#mensagemWhatsapp').val();
+
+    let url = `https://wa.me/55${telefone}?text=${encodeURIComponent(mensagem)}`;
+
+    window.open(url, '_blank');
+
+}
+
+</script>
+
+
+{% endblock %}
