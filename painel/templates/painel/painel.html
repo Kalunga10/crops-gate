@@ -1211,7 +1211,6 @@ function carregarAgendamentos(){
     });
 
 }
-
 // ======================================
 // ABRIR DETALHES
 // ======================================
@@ -1250,10 +1249,11 @@ function abrirDetalhes(
     // OBSERVAÇÃO
     $('#detObservacao').val(observacao);
 
+    // CAMPOS OPERACIONAIS
     $('#mensagemOperacional').val(mensagemOperacional || '');
     $('#motivoAlteracao').val(motivoAlteracao || '');
 
-    // BADGE
+    // BADGE STATUS
     let badge = $('#badgeStatusModal');
 
     badge.removeClass(
@@ -1326,6 +1326,32 @@ function abrirDetalhes(
     }
 
     $('#novoStatus').html(opcoes);
+
+    // =====================================
+    // BLOQUEAR EDIÇÃO QUANDO FINALIZADO
+    // =====================================
+
+    if(status == 'FINALIZADO'){
+
+        $('#novoStatus').prop('disabled', true);
+
+        $('#mensagemOperacional').prop('readonly', true);
+
+        $('#motivoAlteracao').prop('readonly', true);
+
+        $('button[onclick="salvarStatus()"]').prop('disabled', true);
+
+    }else{
+
+        $('#novoStatus').prop('disabled', false);
+
+        $('#mensagemOperacional').prop('readonly', false);
+
+        $('#motivoAlteracao').prop('readonly', false);
+
+        $('button[onclick="salvarStatus()"]').prop('disabled', false);
+
+    }
 
 }
 
