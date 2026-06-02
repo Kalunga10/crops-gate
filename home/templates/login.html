@@ -566,13 +566,125 @@
                 font-size:9px;
             }
         }
+/* ===================================
+LOADING SCREEN
+=================================== */
 
+#loading-screen{
+
+    position:fixed;
+
+    top:0;
+    left:0;
+
+    width:100%;
+    height:100%;
+
+    background:#ffffff;
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    z-index:99999;
+
+    transition:opacity 0.8s ease;
+}
+
+.loading-content{
+
+    text-align:center;
+}
+
+.loading-logo{
+
+    width:320px;
+
+    max-width:80%;
+
+    animation:pulseLogo 2s infinite;
+}
+
+.loading-spinner{
+
+    width:55px;
+
+    height:55px;
+
+    border:5px solid #e5e7eb;
+
+    border-top:5px solid #198754;
+
+    border-radius:50%;
+
+    margin:25px auto;
+
+    animation:spin 1s linear infinite;
+}
+
+.loading-text{
+
+    color:#555;
+
+    font-size:15px;
+
+    font-weight:600;
+
+    letter-spacing:1px;
+}
+
+@keyframes spin{
+
+    from{
+        transform:rotate(0deg);
+    }
+
+    to{
+        transform:rotate(360deg);
+    }
+}
+
+@keyframes pulseLogo{
+
+    0%{
+        transform:scale(1);
+    }
+
+    50%{
+        transform:scale(1.05);
+    }
+
+    100%{
+        transform:scale(1);
+    }
+}
     </style>
 
 </head>
 
 <body>
+<!-- LOADING SCREEN -->
+<div id="loading-screen">
 
+    <div class="loading-content">
+
+        <img
+            src="{% static 'img/logo.png' %}"
+            alt="Crops Control"
+            class="loading-logo"
+        >
+
+        <div class="loading-spinner"></div>
+
+        <p class="loading-text">
+            Carregando sistema...
+        </p>
+
+    </div>
+
+</div>
     <!-- BACKGROUND -->
     <div class="background"></div>
 
@@ -767,7 +879,28 @@
                 Entrando...
             `;
         });
+/* ===================================
+LOADING SCREEN
+=================================== */
 
+window.addEventListener('load', function(){
+
+    setTimeout(function(){
+
+        const loading =
+            document.getElementById('loading-screen');
+
+        loading.style.opacity = '0';
+
+        setTimeout(function(){
+
+            loading.style.display = 'none';
+
+        }, 800);
+
+    }, 1800);
+
+});
     </script>
 
 </body>
