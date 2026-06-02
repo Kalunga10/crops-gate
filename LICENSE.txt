@@ -1,1 +1,22 @@
-todos os diretios reservados a 	GUILHERME ALVES GARCIA FERNANDES
+LICENÇA DE USO PROPRIETÁRIA
+
+Copyright (c) 2026 Guilherme Alves Garcia Fernandes
+
+Todos os direitos reservados.
+
+Este software e seu código-fonte são propriedade exclusiva de Guilherme Alves Garcia Fernandes.
+
+É permitido utilizar o software apenas mediante autorização do autor.
+
+Não é permitida, sem autorização expressa por escrito do autor:
+
+- A cópia total ou parcial do código-fonte;
+- A modificação do código-fonte;
+- A distribuição ou redistribuição do software;
+- A venda, sublicenciamento ou comercialização do software;
+- A criação de obras derivadas;
+- A remoção de créditos de autoria.
+
+A disponibilização deste repositório não implica transferência de propriedade intelectual ou cessão de direitos autorais.
+
+O autor mantém todos os direitos sobre o software, incluindo código-fonte, documentação, identidade visual, banco de dados e demais componentes do projeto.
