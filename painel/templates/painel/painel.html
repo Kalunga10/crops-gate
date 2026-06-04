@@ -566,7 +566,44 @@ RODAPÉ
             </li>
         </ul>
 
-        <div class="tab-content">
+        
+<div class="p-3 border-bottom bg-light">
+    <div class="row g-2">
+
+        <div class="col-md-3">
+            <select id="filtroLocal" class="form-select" multiple>
+                <option value="">Todos os Locais</option>
+            </select>
+        </div>
+
+        <div class="col-md-3">
+            <input type="text" id="filtroMotorista" class="form-control" placeholder="Motorista">
+        </div>
+
+        <div class="col-md-2">
+            <input type="text" id="filtroPlaca" class="form-control" placeholder="Placa">
+        </div>
+
+        <div class="col-md-2">
+            <input type="date" id="dataInicial" class="form-control">
+        </div>
+
+        <div class="col-md-2">
+            <input type="date" id="dataFinal" class="form-control">
+        </div>
+
+    </div>
+
+    <div class="row mt-2">
+        <div class="col-md-12 d-flex gap-2">
+            <button class="btn btn-outline-secondary" onclick="limparFiltros()">
+                Limpar Filtros
+            </button>
+        </div>
+    </div>
+</div>
+
+<div class="tab-content">
 
             <div class="tab-pane fade show active" id="abaAbertos">
                 <div class="table-responsive">
@@ -1009,7 +1046,7 @@ RODAPÉ
                 <button
                     type="button"
                     class="btn btn-success"
-                    onclick="salvarStatus()"
+                    id="btnSalvarStatus" onclick="salvarStatus()"
                 >
                     Salvar Alterações
                 </button>
@@ -1028,11 +1065,34 @@ RODAPÉ
         <small>Sistema Crops Gate v1.0</small>
     </div>
 </footer>
+
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet">
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+<audio id="somNovo" preload="auto">
+    <source src="{% static 'audio/notificacao.mp3' %}" type="audio/mpeg">
+</audio>
+<div id="badgeNovosContainer" style="display:none"></div>
+
 
 <script>
 
 $(document).ready(function(){
+
+
+$('#filtroLocal').select2({
+    placeholder:'Selecione os locais',
+    allowClear:true,
+    width:'100%'
+});
+
+
+
+// Eventos centralizados mais abaixo para evitar chamadas duplicadas
+
+
+
+    carregarFiltros();
 
     carregarAgendamentos();
 
@@ -1044,6 +1104,61 @@ $(document).ready(function(){
 
 });
 
+
+
+let ultimoTotalAgendamentos = 0;
+
+function salvarFiltros(){
+    localStorage.setItem('filtroLocal', JSON.stringify($('#filtroLocal').val() || []));
+    localStorage.setItem('filtroMotorista',$('#filtroMotorista').val());
+    localStorage.setItem('filtroPlaca',$('#filtroPlaca').val());
+}
+
+function carregarFiltros(){
+    let locais = [];
+    try{
+        locais = JSON.parse(localStorage.getItem('filtroLocal') || '[]');
+    }catch(e){
+        locais = [];
+    }
+
+    $('#filtroLocal').val(locais).trigger('change.select2');
+    $('#filtroMotorista').val(localStorage.getItem('filtroMotorista') || '');
+    $('#filtroPlaca').val(localStorage.getItem('filtroPlaca') || '');
+}
+
+function limparFiltros(){
+    localStorage.removeItem('filtroLocal');
+    localStorage.removeItem('filtroMotorista');
+    localStorage.removeItem('filtroPlaca');
+
+    $('#filtroLocal').val('');
+    $('#filtroMotorista').val('');
+    $('#filtroPlaca').val('');
+    $('#dataInicial').val('');
+    $('#dataFinal').val('');
+
+    carregarAgendamentos();
+}
+
+$(document).on('change keyup',
+'#filtroLocal,#filtroMotorista,#filtroPlaca,#dataInicial,#dataFinal',
+function(){
+    salvarFiltros();
+    carregarAgendamentos();
+});
+
+
+function escapeHtml(text){
+    if(text === null || text === undefined) return '';
+    return String(text)
+        .replace(/&/g,'&amp;')
+        .replace(/</g,'&lt;')
+        .replace(/>/g,'&gt;')
+        .replace(/"/g,'&quot;')
+        .replace(/'/g,'&#039;');
+}
+
 // ======================================
 // CARREGAR AGENDAMENTOS
 // ======================================
@@ -1052,11 +1167,19 @@ function carregarAgendamentos(){
 
     $.ajax({
 
-        url:"{% url 'listar_agendamentos' %}",
+        url: "{% url 'listar_agendamentos' %}",
 
-        type:"GET",
+        type: "GET",
 
-        success:function(response){
+        data: {
+            motorista: $('#filtroMotorista').val(),
+            placa: $('#filtroPlaca').val(),
+            local: $('#filtroLocal').val(),
+            data_inicial: $('#dataInicial').val(),
+            data_final: $('#dataFinal').val()
+        },
+
+        success: function(response){
 
             let htmlAbertos = '';
             let htmlAnalise = '';
@@ -1066,53 +1189,73 @@ function carregarAgendamentos(){
             let analise = 0;
             let finalizados = 0;
 
+            let locaisUnicos = new Set();
+
             response.agendamentos.forEach(function(item){
+
+                // ===========================
+                // CONTADORES
+                // ===========================
 
                 let statusClass = 'status-pendente';
 
-                if(item.status == 'ABERTO'){
-
+                if(item.status === 'ABERTO'){
                     statusClass = 'status-pendente';
-
                     abertos++;
-
                 }
 
-                if(item.status == 'EM_ANALISE'){
-
+                else if(item.status === 'EM_ANALISE'){
                     statusClass = 'status-analise';
-
                     analise++;
-
                 }
 
-                if(item.status == 'FINALIZADO'){
-
+                else if(item.status === 'FINALIZADO'){
                     statusClass = 'status-finalizado';
-
                     finalizados++;
-
                 }
 
-                // ======================================
-                // TRATAMENTO STRINGS
-                // ======================================
+                // ===========================
+                // TRATAMENTO DE CAMPOS
+                // ===========================
 
-                let nomeMotorista = String(item.nome_motorista).replace(/'/g, "\\'");
-                let cpfMotorista = String(item.cpf_motorista).replace(/'/g, "\\'");
-                let telefoneMotorista = String(item.telefone_motorista).replace(/'/g, "\\'");
-                let placaCavalo = String(item.placa_cavalo).replace(/'/g, "\\'");
-                let localDescarga = String(item.local_descarga).replace(/'/g, "\\'");
-                let status = String(item.status).replace(/'/g, "\\'");
-                let observacao = String(item.observacao).replace(/'/g, "\\'");
+                let nomeMotorista = String(item.nome_motorista || '').replace(/'/g, "\\'");
+                let cpfMotorista = String(item.cpf_motorista || '').replace(/'/g, "\\'");
+                let telefoneMotorista = String(item.telefone_motorista || '').replace(/'/g, "\\'");
+                let placaCavalo = String(item.placa_cavalo || '').replace(/'/g, "\\'");
+                let localDescarga = String(item.local_descarga || '').replace(/'/g, "\\'");
+                let status = String(item.status || '').replace(/'/g, "\\'");
+                let observacao = String(item.observacao || '').replace(/'/g, "\\'");
 
-                let opcao1 = `${item.data_opcao_1} ${item.horario_opcao_1}`;
-                let opcao2 = `${item.data_opcao_2} ${item.horario_opcao_2}`;
-                let opcao3 = `${item.data_opcao_3} ${item.horario_opcao_3}`;
+                let mensagemOperacional =
+                    String(item.mensagem_operacional || '').replace(/`/g,'');
 
-                // ======================================
-                // HTML
-                // ======================================
+                let motivoAlteracao =
+                    String(item.motivo_alteracao_status || '').replace(/`/g,'');
+
+                // ===========================
+                // LOCAIS DO FILTRO
+                // ===========================
+
+                if(item.local_descarga){
+                    locaisUnicos.add(item.local_descarga);
+                }
+
+                // ===========================
+                // OPÇÕES
+                // ===========================
+
+                let opcao1 =
+                    `${item.data_opcao_1 || ''} ${item.horario_opcao_1 || ''}`;
+
+                let opcao2 =
+                    `${item.data_opcao_2 || ''} ${item.horario_opcao_2 || ''}`;
+
+                let opcao3 =
+                    `${item.data_opcao_3 || ''} ${item.horario_opcao_3 || ''}`;
+
+                // ===========================
+                // LINHA
+                // ===========================
 
                 let linha = `
 
@@ -1121,23 +1264,23 @@ function carregarAgendamentos(){
                     <td>#${item.id}</td>
 
                     <td>
-                        <strong>${item.nome_motorista}</strong>
+                        <strong>${escapeHtml(item.nome_motorista || '')}</strong>
                     </td>
 
-                    <td>${item.placa_cavalo}</td>
+                    <td>${escapeHtml(item.placa_cavalo || '')}</td>
 
-                    <td>${item.local_descarga}</td>
+                    <td>${escapeHtml(item.local_descarga || '')}</td>
 
                     <td>
-                        ${item.data_cadastro}
+                        ${escapeHtml(item.data_cadastro || '')}
                         <br>
-                        <small>${item.hora_cadastro}</small>
+                        <small>${escapeHtml(item.hora_cadastro || '')}</small>
                     </td>
 
                     <td>
 
                         <span class="badge-status ${statusClass}">
-                            ${item.status}
+                            ${escapeHtml(item.status || '')}
                         </span>
 
                     </td>
@@ -1145,8 +1288,6 @@ function carregarAgendamentos(){
                     <td>
 
                         <div class="d-flex gap-2">
-
-                            <!-- WHATSAPP -->
 
                             <button
                                 class="btn-action btn-whatsapp"
@@ -1156,8 +1297,6 @@ function carregarAgendamentos(){
                             >
                                 <i class="bi bi-whatsapp"></i>
                             </button>
-
-                            <!-- DETALHES -->
 
                             <button
                                 class="btn-action btn-detalhes"
@@ -1175,8 +1314,8 @@ function carregarAgendamentos(){
                                     '${opcao2}',
                                     '${opcao3}',
                                     \`${observacao}\`,
-                                    \`${item.mensagem_operacional || ''}\`,
-                                    \`${item.motivo_alteracao_status || ''}\`
+                                    \`${mensagemOperacional}\`,
+                                    \`${motivoAlteracao}\`
                                 )"
                             >
                                 Detalhes
@@ -1190,21 +1329,64 @@ function carregarAgendamentos(){
 
                 `;
 
-                if(item.status == 'ABERTO'){ htmlAbertos += linha; }
-                if(item.status == 'EM_ANALISE'){ htmlAnalise += linha; }
-                if(item.status == 'FINALIZADO'){ htmlFinalizados += linha; }
+                if(item.status === 'ABERTO'){
+                    htmlAbertos += linha;
+                }
+
+                else if(item.status === 'EM_ANALISE'){
+                    htmlAnalise += linha;
+                }
+
+                else if(item.status === 'FINALIZADO'){
+                    htmlFinalizados += linha;
+                }
 
             });
+
+            // ===========================
+            // ATUALIZA FILTRO DE LOCAIS
+            // ===========================
+
+            let locaisSelecionados =
+                $('#filtroLocal').val() || [];
+
+            $('#filtroLocal').empty();
+
+            locaisUnicos.forEach(function(local){
+
+                $('#filtroLocal').append(
+                    new Option(local, local)
+                );
+
+            });
+
+            $('#filtroLocal')
+                .val(locaisSelecionados)
+                .trigger('change.select2');
+
+            // ===========================
+            // TABELAS
+            // ===========================
 
             $('#tabelaAbertos').html(htmlAbertos);
             $('#tabelaAnalise').html(htmlAnalise);
             $('#tabelaFinalizados').html(htmlFinalizados);
 
+            // ===========================
+            // KPIs
+            // ===========================
+
             $('#kpiPendentes').html(abertos);
-
             $('#kpiAnalise').html(analise);
-
             $('#kpiFinalizados').html(finalizados);
+
+        },
+
+        error: function(){
+
+            console.error(
+                'Erro ao carregar agendamentos.'
+            );
 
         }
 
@@ -1339,7 +1521,7 @@ function abrirDetalhes(
 
         $('#motivoAlteracao').prop('readonly', true);
 
-        $('button[onclick="salvarStatus()"]').prop('disabled', true);
+        $('#btnSalvarStatus').prop('disabled', true);
 
     }else{
 
@@ -1349,7 +1531,7 @@ function abrirDetalhes(
 
         $('#motivoAlteracao').prop('readonly', false);
 
-        $('button[onclick="salvarStatus()"]').prop('disabled', false);
+        $('#btnSalvarStatus').prop('disabled', false);
 
     }
 

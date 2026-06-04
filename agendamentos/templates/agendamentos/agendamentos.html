@@ -734,7 +734,7 @@ RESPONSIVO
                                     <strong>Importante</strong>
 
                                     <p class="mb-0 mt-1">
-                                        Após enviar a solicitação, ela será analisada pelo supervisor responsável.
+                                        Após o envio da solicitação, ela será analisada pelo consultor responsável. Em seguida, a Central entrará em contato com o motorista. É fundamental que o número de telefone esteja atualizado e possua WhatsApp para facilitar a comunicação.
                                     </p>
 
                                 </div>
@@ -894,13 +894,226 @@ $(document).ready(function(){
 
     });
 
+    
+    // ==========================================
+    // VALIDAÇÕES
+    // ==========================================
+
+    function validarCPF(cpf){
+
+        cpf = cpf.replace(/\D/g,'');
+
+        if(cpf.length !== 11) return false;
+        if(/^(\d)\1+$/.test(cpf)) return false;
+
+        let soma = 0;
+
+        for(let i=0;i<9;i++){
+            soma += parseInt(cpf.charAt(i)) * (10 - i);
+        }
+
+        let resto = (soma * 10) % 11;
+        if(resto === 10) resto = 0;
+
+        if(resto !== parseInt(cpf.charAt(9))) return false;
+
+        soma = 0;
+
+        for(let i=0;i<10;i++){
+            soma += parseInt(cpf.charAt(i)) * (11 - i);
+        }
+
+        resto = (soma * 10) % 11;
+        if(resto === 10) resto = 0;
+
+        return resto === parseInt(cpf.charAt(10));
+    }
+
+    function validarPlaca(placa){
+
+        placa = placa.toUpperCase().replace(/[^A-Z0-9]/g,'');
+
+        return /^[A-Z]{3}[0-9]{4}$/.test(placa) ||
+               /^[A-Z]{3}[0-9][A-Z][0-9]{2}$/.test(placa);
+    }
+
+    function validarTelefone(telefone){
+
+        telefone = telefone.replace(/\D/g,'');
+
+        return telefone.length === 11;
+    }
+
+    $('#placa_cavalo').blur(function(){
+
+        if($(this).val() && !validarPlaca($(this).val())){
+
+            Swal.fire({
+                icon:'warning',
+                title:'Placa inválida',
+                text:'Utilize o formato ABC-1234 ou ABC-1D23.'
+            });
+
+            $(this).focus();
+        }
+
+    });
+
+
     // ==========================================
     // SUBMIT
     // ==========================================
 
-    $('#formAgendamento').submit(function(e){
+    $('#formAgendamento').submit(async function(e){
 
         e.preventDefault();
+
+        if(!validarCPF($('#cpf').val())){
+
+            Swal.fire({
+                icon:'warning',
+                title:'CPF inválido',
+                text:'Informe um CPF válido.'
+            });
+
+            return;
+        }
+
+        if(!validarPlaca($('#placa_cavalo').val())){
+
+            Swal.fire({
+                icon:'warning',
+                title:'Placa inválida',
+                text:'Informe uma placa válida.'
+            });
+
+            return;
+        }
+
+        if(!validarTelefone($('#telefone').val())){
+
+            Swal.fire({
+                icon:'warning',
+                title:'Telefone inválido',
+                text:'Informe um telefone celular válido.'
+            });
+
+            return;
+        }
+
+        const destino = $('[name="local_descarga"] option:selected').text();
+
+const confirmacao = await Swal.fire({
+
+    title:'Confirmar Solicitação',
+
+    width:700,
+
+    html:`
+
+        <div class="text-start">
+
+            <p>
+                <strong>Destino:</strong><br>
+                ${destino}
+            </p>
+
+            <p>
+                <strong>Motorista:</strong><br>
+                ${$('#nome_motorista').val()}
+            </p>
+
+            <p>
+                <strong>CPF:</strong><br>
+                ${$('#cpf').val()}
+            </p>
+
+            <p>
+                <strong>Telefone:</strong><br>
+                ${$('#telefone').val()}
+            </p>
+
+            <p>
+                <strong>Placa:</strong><br>
+                ${$('#placa_cavalo').val()}
+            </p>
+
+            <hr>
+
+            <p>
+                <strong>Opção 1:</strong><br>
+                ${$('[name="data_opcao_1"]').val()}
+                às
+                ${$('[name="horario_opcao_1"]').val()}
+            </p>
+
+            ${
+                $('[name="data_opcao_2"]').val()
+                ? `
+                <p>
+                    <strong>Opção 2:</strong><br>
+                    ${$('[name="data_opcao_2"]').val()}
+                    às
+                    ${$('[name="horario_opcao_2"]').val()}
+                </p>
+                `
+                : ''
+            }
+
+            ${
+                $('[name="data_opcao_3"]').val()
+                ? `
+                <p>
+                    <strong>Opção 3:</strong><br>
+                    ${$('[name="data_opcao_3"]').val()}
+                    às
+                    ${$('[name="horario_opcao_3"]').val()}
+                </p>
+                `
+                : ''
+            }
+
+            ${
+                $('[name="observacao"]').val()
+                ? `
+                <hr>
+
+                <p>
+                    <strong>Observação:</strong><br>
+                    ${$('[name="observacao"]').val()}
+                </p>
+                `
+                : ''
+            }
+
+            <div class="alert alert-warning mt-3 mb-0">
+
+                <i class="bi bi-exclamation-triangle-fill"></i>
+
+                Confira atentamente os dados antes de enviar a solicitação.
+
+            </div>
+
+        </div>
+
+    `,
+
+    icon:'question',
+
+    showCancelButton:true,
+
+    confirmButtonText:'Sim, Enviar',
+
+    cancelButtonText:'Cancelar',
+
+    confirmButtonColor:'#198754',
+
+    cancelButtonColor:'#dc3545'
+
+});
+        if(!confirmacao.isConfirmed){
+            return;
+        }
 
         let botao = $('.btn-enviar');
 
