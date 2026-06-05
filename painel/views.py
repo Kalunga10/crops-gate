@@ -58,7 +58,7 @@ def listar_agendamentos(request):
     agendamentos = (
         Agendamento.objects
         .select_related('motorista')
-        .order_by('-data_cadastro')
+        .order_by('data_cadastro')
     )
 
     # =====================================
