@@ -946,18 +946,21 @@ $(document).ready(function(){
 
     $('#placa_cavalo').blur(function(){
 
-        if($(this).val() && !validarPlaca($(this).val())){
+    if($(this).val() && !validarPlaca($(this).val())){
 
-            Swal.fire({
-                icon:'warning',
-                title:'Placa inválida',
-                text:'Utilize o formato ABC-1234 ou ABC-1D23.'
-            });
+        const campo = $(this);
 
-            $(this).focus();
-        }
+        Swal.fire({
+            icon:'warning',
+            title:'Placa inválida',
+            text:'Utilize o formato ABC-1234 ou ABC-1D23.'
+        }).then(() => {
+            campo.select(); // seleciona o texto para correção
+        });
 
-    });
+    }
+
+});
 
 
     // ==========================================
