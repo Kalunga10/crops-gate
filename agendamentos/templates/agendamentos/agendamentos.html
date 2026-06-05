@@ -304,11 +304,11 @@ RESPONSIVO
 
         </a>
 
-        <a href="#" class="menu-item">
+        <a href="#" class="menu-item" id="btnMinhasSolicitacoes">
 
             <i class="bi bi-card-list"></i>
 
-            <span>Minhas</span>
+            <span>Minhas Solicitações</span>
 
         </a>
 
@@ -767,11 +767,18 @@ RESPONSIVO
 
 </div>
 
+
+<!-- MODAL MINHAS SOLICITAÇÕES -->
+<div class="modal fade" id="modalSolicitacoes" tabindex="-1">
+<div class="modal-dialog modal-xl modal-dialog-scrollable"><div class="modal-content"><div class="modal-header bg-primary text-white"><h5 class="modal-title">Minhas Solicitações</h5><button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button></div><div class="modal-body"><div id="resultadoSolicitacoes"></div></div></div></div></div>
+
 <!-- JQUERY -->
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 
 <!-- SWEET ALERT -->
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
 <!-- IMASK -->
 <script src="https://unpkg.com/imask"></script>
@@ -1255,7 +1262,121 @@ const confirmacao = await Swal.fire({
 
     });
 
+
+    // ==========================================
+    // MODAL MINHAS SOLICITAÇÕES
+    // ==========================================
+
+    $('#btnMinhasSolicitacoes').click(function(e){
+
+        e.preventDefault();
+
+        let modal = new bootstrap.Modal(
+            document.getElementById('modalSolicitacoes')
+        );
+
+        modal.show();
+
+    });
+
+    
+    function carregarSolicitacoes(){
+
+        $('#resultadoSolicitacoes').html(`
+            <div class="text-center py-5">
+                <div class="spinner-border"></div>
+            </div>
+        `);
+
+        $.ajax({
+
+            url:"{% url 'listar_agendamentos' %}",
+
+            type:"GET",
+
+            success:function(response){
+
+                let html = '';
+
+                if(!response.success || response.data.length === 0){
+
+                    html = `
+                        <div class="alert alert-warning">
+                            Nenhuma solicitação encontrada.
+                        </div>
+                    `;
+
+                }else{
+
+                    response.data.forEach(function(item){
+
+                        let badge = 'secondary';
+
+                        if(item.status === 'PENDENTE') badge = 'warning';
+                        if(item.status === 'APROVADO') badge = 'success';
+                        if(item.status === 'RECUSADO') badge = 'danger';
+
+                        html += `
+                            <div class="card mb-3 shadow-sm">
+                                <div class="card-body">
+
+                                    <div class="d-flex justify-content-between">
+                                        <h6>Solicitação #${item.id}</h6>
+                                        <span class="badge bg-${badge}">${item.status}</span>
+                                    </div>
+
+                                    <hr>
+
+                                    <p><strong>Motorista:</strong> ${item.motorista}</p>
+                                    <p><strong>CPF:</strong> ${item.cpf}</p>
+                                    <p><strong>Telefone:</strong> ${item.telefone}</p>
+                                    <p><strong>Placa:</strong> ${item.placa}</p>
+                                    <p><strong>Destino:</strong> ${item.local_descarga}</p>
+                                    <p><strong>Data:</strong> ${item.data_opcao_1} às ${item.horario_opcao_1}</p>
+                                    <p class="mb-0"><strong>Cadastro:</strong> ${item.data_cadastro}</p>
+
+                                </div>
+                            </div>
+                        `;
+
+                    });
+
+                }
+
+                $('#resultadoSolicitacoes').html(html);
+
+            },
+
+            error:function(){
+
+                $('#resultadoSolicitacoes').html(`
+                    <div class="alert alert-danger">
+                        Erro ao consultar solicitações.
+                    </div>
+                `);
+
+            }
+
+        });
+
+    }
+
+    $('#btnMinhasSolicitacoes').click(function(e){
+
+        e.preventDefault();
+
+        let modal = new bootstrap.Modal(
+            document.getElementById('modalSolicitacoes')
+        );
+
+        modal.show();
+
+        carregarSolicitacoes();
+
+    });
+
 });
+
 
 </script>
 

@@ -169,6 +169,8 @@ def listar_agendamentos(request):
 
             'horario_opcao_1': str(item.horario_opcao_1),
 
+            'usuario_logado': request.user.username,
+
         })
 
     return JsonResponse({
