@@ -854,7 +854,9 @@ $(document).ready(function(){
     // DATA MÍNIMA
     // ==========================================
 
-    const hoje = new Date().toISOString().split('T')[0];
+    const hoje = new Date(
+        Date.now() - (new Date().getTimezoneOffset() * 60000)
+    ).toISOString().split('T')[0];
 
     $('[name=data_opcao_1]').attr('min', hoje);
     $('[name=data_opcao_2]').attr('min', hoje);
@@ -1261,27 +1263,8 @@ const confirmacao = await Swal.fire({
         });
 
     });
-
-
-    // ==========================================
-    // MODAL MINHAS SOLICITAÇÕES
-    // ==========================================
-
-    $('#btnMinhasSolicitacoes').click(function(e){
-
-        e.preventDefault();
-
-        let modal = new bootstrap.Modal(
-            document.getElementById('modalSolicitacoes')
-        );
-
-        modal.show();
-
-    });
-
-    
-    function carregarSolicitacoes(){
-
+function carregarSolicitacoes(){
+        console.log("{% url 'listar_agendamentos' %}");
         $('#resultadoSolicitacoes').html(`
             <div class="text-center py-5">
                 <div class="spinner-border"></div>
@@ -1298,7 +1281,7 @@ const confirmacao = await Swal.fire({
 
                 let html = '';
 
-                if(!response.success || response.data.length === 0){
+                if(!response.success || response.agendamentos.length === 0){
 
                     html = `
                         <div class="alert alert-warning">
@@ -1308,7 +1291,7 @@ const confirmacao = await Swal.fire({
 
                 }else{
 
-                    response.data.forEach(function(item){
+                    response.agendamentos.forEach(function(item){
 
                         let badge = 'secondary';
 
@@ -1327,10 +1310,10 @@ const confirmacao = await Swal.fire({
 
                                     <hr>
 
-                                    <p><strong>Motorista:</strong> ${item.motorista}</p>
-                                    <p><strong>CPF:</strong> ${item.cpf}</p>
-                                    <p><strong>Telefone:</strong> ${item.telefone}</p>
-                                    <p><strong>Placa:</strong> ${item.placa}</p>
+                                    <p><strong>Motorista:</strong> ${item.nome_motorista}</p>
+                                    <p><strong>CPF:</strong> ${item.cpf_motorista}</p>
+                                    <p><strong>Telefone:</strong> ${item.telefone_motorista}</p>
+                                    <p><strong>Placa:</strong> ${item.placa_cavalo}</p>
                                     <p><strong>Destino:</strong> ${item.local_descarga}</p>
                                     <p><strong>Data:</strong> ${item.data_opcao_1} às ${item.horario_opcao_1}</p>
                                     <p class="mb-0"><strong>Cadastro:</strong> ${item.data_cadastro}</p>

@@ -132,7 +132,7 @@ def criar_agendamento(request):
 
 @login_required
 def listar_agendamentos(request):
-
+    print("VIEW LISTAR_AGENDAMENTOS EXECUTADA")
     agendamentos = Agendamento.objects.filter(
 
         solicitante=request.user

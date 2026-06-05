@@ -232,7 +232,7 @@ def listar_agendamentos(request):
 
             'motivo_alteracao_status':
                 item.motivo_alteracao_status or '',
-
+            
             'data_ultima_alteracao': (
 
                 item.data_ultima_alteracao.strftime(
