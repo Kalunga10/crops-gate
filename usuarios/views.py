@@ -42,11 +42,9 @@ def redirecionar_usuario(user):
         # PERFIL INVÁLIDO
         # =============================================
 
-        else:
+        return None
 
-            return None
-
-    except:
+    except Exception:
 
         return None
 
@@ -74,11 +72,8 @@ def login_view(request):
         logout(request)
 
         messages.error(
-
             request,
-
             'Perfil de usuário não encontrado.'
-
         )
 
         return redirect('/login/')
@@ -90,17 +85,12 @@ def login_view(request):
     if request.method == 'POST':
 
         username = request.POST.get('usuario')
-
         password = request.POST.get('senha')
 
         user = authenticate(
-
             request,
-
             username=username,
-
             password=password
-
         )
 
         # =====================================
@@ -122,11 +112,8 @@ def login_view(request):
             logout(request)
 
             messages.error(
-
                 request,
-
                 'Usuário sem perfil cadastrado.'
-
             )
 
             return redirect('/login/')
@@ -135,28 +122,20 @@ def login_view(request):
         # LOGIN INVÁLIDO
         # =====================================
 
-        else:
+        messages.error(
+            request,
+            'Usuário ou senha inválidos.'
+        )
 
-            messages.error(
-
-                request,
-
-                'Usuário ou senha inválidos.'
-
-            )
-
-            return redirect('/login/')
+        return redirect('/login/')
 
     # =========================================
     # GET
     # =========================================
 
     return render(
-
         request,
-
         'login.html'
-
     )
 
 

@@ -5,7 +5,7 @@ from django.contrib.auth.decorators import login_required
 from django.db import transaction
 import logging
 import re
-
+from usuarios.decorators import perfil_requerido
 from .models import Agendamento, Motorista
 
 logger = logging.getLogger(__name__)
@@ -16,6 +16,7 @@ def limpar_cpf(cpf):
 
 
 @login_required
+@perfil_requerido('CLASSIFICADOR')
 def agendamentos(request):
     return render(request, "agendamentos/agendamentos.html")
 
@@ -23,6 +24,7 @@ def agendamentos(request):
 @login_required
 @require_POST
 @transaction.atomic
+@perfil_requerido('CLASSIFICADOR')
 def criar_agendamento(request):
     try:
         cpf = limpar_cpf(request.POST.get("cpf"))
@@ -95,6 +97,7 @@ def criar_agendamento(request):
 
 
 @login_required
+@perfil_requerido('CLASSIFICADOR')
 def listar_agendamentos_usuarios(request):
     agendamentos = (
         Agendamento.objects.filter(solicitante=request.user)
@@ -126,6 +129,7 @@ def listar_agendamentos_usuarios(request):
 
 
 @login_required
+@perfil_requerido('CLASSIFICADOR')
 def detalhar_agendamento(request, id):
     
     try:
@@ -158,6 +162,7 @@ def detalhar_agendamento(request, id):
 
 @login_required
 @require_POST
+@perfil_requerido('CLASSIFICADOR')
 def cancelar_agendamento(request, id):
     try:
         agendamento = Agendamento.objects.get(
@@ -186,6 +191,7 @@ def cancelar_agendamento(request, id):
 
 
 @login_required
+@perfil_requerido('CLASSIFICADOR')
 def buscar_motorista(request):
     cpf = limpar_cpf(request.GET.get("cpf"))
 

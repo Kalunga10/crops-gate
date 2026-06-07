@@ -4,7 +4,7 @@ from django.views.decorators.http import require_POST
 from django.contrib.auth.decorators import login_required
 from django.db.models import Q
 from django.utils import timezone
-
+from usuarios.decorators import perfil_requerido
 from agendamentos.models import Agendamento
 
 
@@ -13,6 +13,7 @@ from agendamentos.models import Agendamento
 # =====================================
 
 @login_required
+@perfil_requerido('CONSULTOR')
 def painel_view(request):
 
     return render(
@@ -38,6 +39,7 @@ def painel_agendamentos(request):
 # AJAX LISTAR AGENDAMENTOS
 # =====================================
 @login_required
+@perfil_requerido('CONSULTOR')
 def listar_agendamentos(request):
 
     status = request.GET.get('status')
@@ -266,6 +268,7 @@ def listar_agendamentos(request):
 
 @login_required
 @require_POST
+@perfil_requerido('CONSULTOR')
 def alterar_status_agendamento(request):
 
     agendamento_id = request.POST.get('id')
