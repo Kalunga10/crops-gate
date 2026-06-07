@@ -1,6 +1,7 @@
 from django.urls import path
 
 from . import views
+from usuarios.views import alterar_senha
 
 
 urlpatterns = [
@@ -41,6 +42,12 @@ urlpatterns = [
     name='buscar_motorista'
 ),
 
+
+    path(
+        'alterar-senha/',
+        alterar_senha,
+        name='alterar_senha'
+),
 
 
 ]

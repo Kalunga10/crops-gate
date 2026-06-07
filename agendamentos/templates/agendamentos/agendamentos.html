@@ -312,7 +312,7 @@ RESPONSIVO
 
         </a>
 
-        <a href="#" class="menu-item">
+        <a href="#" class="menu-item" id="btnPerfil">
 
             <i class="bi bi-person"></i>
 
@@ -775,6 +775,57 @@ RESPONSIVO
 <!-- MODAL MINHAS SOLICITAÇÕES -->
 <div class="modal fade" id="modalSolicitacoes" tabindex="-1">
 <div class="modal-dialog modal-xl modal-dialog-scrollable"><div class="modal-content"><div class="modal-header bg-primary text-white"><h5 class="modal-title">Minhas Solicitações</h5><button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button></div><div class="modal-body"><div id="resultadoSolicitacoes"></div></div></div></div></div>
+
+
+<!-- MODAL PERFIL -->
+<div class="modal fade" id="modalPerfil" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title">Meu Perfil</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+
+                <div class="text-center mb-4">
+                    <i class="bi bi-person-circle fs-1 text-primary"></i>
+                    <h5 class="mt-2">
+                        {{ request.user.get_full_name|default:request.user.username }}
+                    </h5>
+                    <small class="text-muted">
+                        Usuário: {{ request.user.username }}
+                    </small>
+                </div>
+
+                <form id="formTrocarSenha">
+                    {% csrf_token %}
+
+                    <div class="mb-3">
+                        <label class="form-label">Senha Atual</label>
+                        <input type="password" name="senha_atual" class="form-control" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Nova Senha</label>
+                        <input type="password" name="nova_senha" class="form-control" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Confirmar Nova Senha</label>
+                        <input type="password" name="confirmar_senha" class="form-control" required>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary w-100">
+                        <i class="bi bi-key"></i>
+                        Alterar Senha
+                    </button>
+                </form>
+
+            </div>
+        </div>
+    </div>
+</div>
+
 
 <!-- JQUERY -->
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
@@ -1348,7 +1399,65 @@ function carregarSolicitacoes(){
 
     }
 
-    $('#btnMinhasSolicitacoes').click(function(e){
+    
+    $('#btnPerfil').click(function(e){
+
+        e.preventDefault();
+
+        let modal = new bootstrap.Modal(
+            document.getElementById('modalPerfil')
+        );
+
+        modal.show();
+
+    });
+
+    $('#formTrocarSenha').submit(function(e){
+
+        e.preventDefault();
+
+        $.ajax({
+
+            url:"{% url 'alterar_senha' %}",
+
+            type:"POST",
+
+            data:$(this).serialize(),
+
+            success:function(response){
+
+                if(response.success){
+
+                    Swal.fire({
+                        icon:'success',
+                        title:'Sucesso',
+                        text:response.message
+                    });
+
+                    $('#formTrocarSenha')[0].reset();
+
+                    bootstrap.Modal.getInstance(
+                        document.getElementById('modalPerfil')
+                    ).hide();
+
+                }else{
+
+                    Swal.fire({
+                        icon:'warning',
+                        title:'Atenção',
+                        text:response.message
+                    });
+
+                }
+
+            }
+
+        });
+
+    });
+
+
+$('#btnMinhasSolicitacoes').click(function(e){
 
         e.preventDefault();
 
