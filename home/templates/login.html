@@ -159,7 +159,9 @@
 
             max-width:620px;
 
-            background:#ffffff;
+            background:rgba(255,255,255,0.95);
+            backdrop-filter:blur(12px);
+            border-top:6px solid #198754;
 
             border-radius:28px;
 
@@ -216,6 +218,7 @@
             justify-content:center;
 
             margin-bottom:12px;
+            text-align:center;
         }
 
         .logo img{
@@ -333,7 +336,7 @@
 
         .input-group-text{
 
-            background:#fff;
+            background:#f8faf8;
 
             border-right:none;
 
@@ -711,6 +714,10 @@ LOADING SCREEN
 
                 </div>
 
+                <p style="text-align:center;color:#198754;font-weight:600;font-size:13px;margin-top:5px;">
+                    Plataforma Oficial de Agendamento
+                </p>
+
             </div>
 
             <!-- DIVIDER -->
@@ -821,7 +828,7 @@ LOADING SCREEN
 
         <p>
             <i class="bi bi-shield-check"></i>
-            Sistema seguro e monitorado
+            Sistema seguro e monitorado | Versão 1.0.0
         </p>
 
         <p>
@@ -885,6 +892,7 @@ LOADING SCREEN
 
 window.addEventListener('load', function(){
 
+    /* Loading otimizado */
     setTimeout(function(){
 
         const loading =
@@ -898,7 +906,7 @@ window.addEventListener('load', function(){
 
         }, 800);
 
-    }, 1800);
+    }, 300);
 
 });
     </script>
