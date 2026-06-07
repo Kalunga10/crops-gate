@@ -19,8 +19,8 @@ urlpatterns = [
 
     path(
         'listar/',
-        views.listar_agendamentos,
-        name='listar_agendamentos'
+        views.listar_agendamentos_usuarios,
+        name='listar_agendamentos_usuarios'
     ),
 
     path(
@@ -40,5 +40,7 @@ urlpatterns = [
     views.buscar_motorista,
     name='buscar_motorista'
 ),
+
+
 
 ]
