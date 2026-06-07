@@ -952,6 +952,27 @@ $(document).ready(function(){
 
                 }
 
+            },
+
+            error:function(){
+
+                Swal.fire({
+                    icon:'error',
+                    title:'Erro',
+                    text:'Falha ao alterar a senha.'
+                });
+
+            },
+
+            complete:function(){
+
+                btn.prop('disabled', false);
+
+                btn.html(`
+                    <i class="bi bi-key"></i>
+                    Alterar Senha
+                `);
+
             }
 
         });
@@ -1414,47 +1435,79 @@ function carregarSolicitacoes(){
 
     $('#formTrocarSenha').submit(function(e){
 
-        e.preventDefault();
+    e.preventDefault();
 
-        $.ajax({
+    let form = $(this);
 
-            url:"{% url 'alterar_senha' %}",
+    let btn = form.find('button[type="submit"]');
 
-            type:"POST",
+    btn.prop('disabled', true);
 
-            data:$(this).serialize(),
+    btn.html(`
+        <span class="spinner-border spinner-border-sm me-2"></span>
+        Alterando senha...
+    `);
 
-            success:function(response){
+    $.ajax({
 
-                if(response.success){
+        url:"{% url 'alterar_senha' %}",
 
-                    Swal.fire({
-                        icon:'success',
-                        title:'Sucesso',
-                        text:response.message
-                    });
+        type:"POST",
 
-                    $('#formTrocarSenha')[0].reset();
+        data:form.serialize(),
 
-                    bootstrap.Modal.getInstance(
-                        document.getElementById('modalPerfil')
-                    ).hide();
+        success:function(response){
 
-                }else{
+            if(response.success){
 
-                    Swal.fire({
-                        icon:'warning',
-                        title:'Atenção',
-                        text:response.message
-                    });
+                Swal.fire({
+                    icon:'success',
+                    title:'Sucesso',
+                    text:response.message
+                });
 
-                }
+                form[0].reset();
+
+                bootstrap.Modal.getInstance(
+                    document.getElementById('modalPerfil')
+                ).hide();
+
+            }else{
+
+                Swal.fire({
+                    icon:'warning',
+                    title:'Atenção',
+                    text:response.message
+                });
 
             }
 
-        });
+        },
+
+        error:function(){
+
+            Swal.fire({
+                icon:'error',
+                title:'Erro',
+                text:'Falha ao alterar a senha.'
+            });
+
+        },
+
+        complete:function(){
+
+            btn.prop('disabled', false);
+
+            btn.html(`
+                <i class="bi bi-key"></i>
+                Alterar Senha
+            `);
+
+        }
 
     });
+
+});
 
 
 $('#btnMinhasSolicitacoes').click(function(e){
