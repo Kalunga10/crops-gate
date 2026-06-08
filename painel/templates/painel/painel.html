@@ -1,7 +1,21 @@
 {% extends 'base.html' %}
 {% load static %}
 
-{% block title %}Painel de Solicitações | Crops Gate{% endblock %}
+{% block title %}Painel de Solicitações | Crops Gate
+<script>
+function atualizarCabecalho(){
+ const h=new Date().getHours();
+ let s='👋 Boa noite';
+ if(h<12)s='☀️ Bom dia';
+ else if(h<18)s='🌤️ Boa tarde';
+ document.getElementById('saudacaoUsuario').innerHTML=s+', <strong>{{ request.user.first_name|default:request.user.username }}</strong>';
+ document.getElementById('dataHoraAtual').innerHTML=new Date().toLocaleString('pt-BR');
+}
+setInterval(atualizarCabecalho,1000);
+document.addEventListener('DOMContentLoaded',atualizarCabecalho);
+</script>
+
+{% endblock %}
 
 {% block content %}
 
@@ -432,9 +446,23 @@ RODAPÉ
     display:block;
 }
 
+
+/* V3 */
+.user-card{display:flex;align-items:center;gap:10px;background:#f8fafc;padding:10px 14px;border-radius:14px;}
+.status-online{width:10px;height:10px;background:#16a34a;border-radius:50%;display:inline-block;}
+.card-total{border:2px solid #0d6efd;}
+.toast-info-bar{background:#eff6ff;padding:10px 15px;border-radius:12px;margin-bottom:15px;font-size:14px;}
+
 </style>
 
 <div class="container-fluid page-painel">
+
+<div class="toast-info-bar">
+    <span id="saudacaoUsuario">👋 Bem-vindo</span> |
+    <span id="dataHoraAtual"></span> |
+    <span id="statusAtualizacao">🔄 Atualização automática ativa</span>
+</div>
+
 
     <!-- TOPBAR -->
     <div class="topbar">
@@ -466,7 +494,14 @@ RODAPÉ
             <a href="/painel" class="menu-btn text-decoration-none">
     <i class="bi bi-house"></i>
 </a>
-            <button class="menu-btn">
+            <div class="user-card">
+<span class="status-online"></span>
+<div>
+<strong>{{ request.user.first_name|default:request.user.username }}</strong><br>
+<small>Usuário Logado</small>
+</div>
+</div>
+<button class="menu-btn">
                 <i class="bi bi-person"></i>
             </button>
 
@@ -491,6 +526,13 @@ RODAPÉ
 
     <!-- KPIS -->
     <div class="row g-4 mb-4">
+<div class="col-md-3">
+<div class="kpi-card card-total">
+<div class="kpi-icon" style="background:#eff6ff;color:#0d6efd;"><i class="bi bi-collection"></i></div>
+<div class="kpi-title">Total</div>
+<div class="kpi-value" id="kpiTotal">0</div>
+</div>
+</div>
 
         <div class="col-md-4">
 
@@ -598,6 +640,9 @@ RODAPÉ
         
 <div class="p-3 border-bottom bg-light">
     <div class="row g-2">
+<div class="col-md-12 mb-2">
+<input type="text" id="buscaGlobal" class="form-control" placeholder="🔍 Pesquisar motorista, placa ou local">
+</div>
 
         <div class="col-md-3">
             <select id="filtroLocal" class="form-select" multiple>
@@ -1411,7 +1456,7 @@ function carregarAgendamentos(){
         
             $('#abaAbertosCount').html(abertos);
             $('#abaAnaliseCount').html(analise);
-            $('#abaFinalizadosCount').html(finalizados);
+            $('#abaFinalizadosCount').html(finalizados);$('#kpiTotal').html(abertos+analise+finalizados);$('#statusAtualizacao').html('🟢 Atualizado às '+new Date().toLocaleTimeString('pt-BR'));
         
 
         },
@@ -1684,5 +1729,19 @@ function abrirWhatsapp(){
 
 </script>
 
+
+
+<script>
+function atualizarCabecalho(){
+ const h=new Date().getHours();
+ let s='👋 Boa noite';
+ if(h<12)s='☀️ Bom dia';
+ else if(h<18)s='🌤️ Boa tarde';
+ document.getElementById('saudacaoUsuario').innerHTML=s+', <strong>{{ request.user.first_name|default:request.user.username }}</strong>';
+ document.getElementById('dataHoraAtual').innerHTML=new Date().toLocaleString('pt-BR');
+}
+setInterval(atualizarCabecalho,1000);
+document.addEventListener('DOMContentLoaded',atualizarCabecalho);
+</script>
 
 {% endblock %}
