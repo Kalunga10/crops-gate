@@ -187,7 +187,7 @@ KPIS
 
 .kpi-value{
 
-    font-size:32px;
+    font-size:48px;
 
     font-weight:800;
 
@@ -399,6 +399,39 @@ RODAPÉ
 
     box-shadow:0 2px 10px rgba(0,0,0,0.05);
 }
+
+/* ===== V2 UX/UI ===== */
+.kpi-card{
+    min-height:140px !important;
+    transition:.3s;
+}
+.kpi-card:hover{
+    transform:translateY(-3px);
+}
+.kpi-value{
+    font-size:52px !important;
+    line-height:1;
+}
+.btn-detalhes{
+    background:#0d6efd !important;
+    color:#fff !important;
+}
+.nav-tabs .nav-link{
+    font-weight:700;
+}
+.table thead{
+    position:sticky;
+    top:0;
+    z-index:5;
+}
+.nome-motorista{
+    max-width:240px;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+    display:block;
+}
+
 </style>
 
 <div class="container-fluid page-painel">
@@ -420,8 +453,9 @@ RODAPÉ
                 </div>
 
                 <div class="topbar-subtitle">
-                    Painel operacional do Crops Gate
-                </div>
+                    Painel operacional do Crops Gate<br>
+    👋 Bem-vindo, <strong>{{ request.user.first_name|default:request.user.username }}</strong>
+</div>
 
             </div>
 
@@ -432,11 +466,6 @@ RODAPÉ
             <a href="/painel" class="menu-btn text-decoration-none">
     <i class="bi bi-house"></i>
 </a>
-
-            <button class="menu-btn">
-                <i class="bi bi-bell"></i>
-            </button>
-
             <button class="menu-btn">
                 <i class="bi bi-person"></i>
             </button>
@@ -475,7 +504,7 @@ RODAPÉ
                 </div>
 
                 <div class="kpi-title">
-                    Abertos
+                    Abertos (<span id='abaAbertosCount'>0</span>)
                 </div>
 
                 <div
@@ -501,7 +530,7 @@ RODAPÉ
                 </div>
 
                 <div class="kpi-title">
-                    Em Análise
+                    Em Análise (<span id='abaAnaliseCount'>0</span>)
                 </div>
 
                 <div
@@ -527,7 +556,7 @@ RODAPÉ
                 </div>
 
                 <div class="kpi-title">
-                    Finalizados
+                    Finalizados (<span id='abaFinalizadosCount'>0</span>)
                 </div>
 
                 <div
@@ -1379,6 +1408,11 @@ function carregarAgendamentos(){
             $('#kpiPendentes').html(abertos);
             $('#kpiAnalise').html(analise);
             $('#kpiFinalizados').html(finalizados);
+        
+            $('#abaAbertosCount').html(abertos);
+            $('#abaAnaliseCount').html(analise);
+            $('#abaFinalizadosCount').html(finalizados);
+        
 
         },
 
