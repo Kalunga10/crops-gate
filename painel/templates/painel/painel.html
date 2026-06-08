@@ -457,11 +457,7 @@ RODAPÉ
 
 <div class="container-fluid page-painel">
 
-<div class="toast-info-bar">
-    <span id="saudacaoUsuario">👋 Bem-vindo</span> |
-    <span id="dataHoraAtual"></span> |
-    <span id="statusAtualizacao">🔄 Atualização automática ativa</span>
-</div>
+
 
 
     <!-- TOPBAR -->
@@ -482,7 +478,7 @@ RODAPÉ
 
                 <div class="topbar-subtitle">
                     Painel operacional do Crops Gate<br>
-    👋 Bem-vindo, <strong>{{ request.user.first_name|default:request.user.username }}</strong>
+    <span id="saudacaoUsuario">👋 Bem-vindo</span> | <span id="dataHoraAtual"></span> | <span id="statusAtualizacao">🔄 Atualização automática ativa</span>
 </div>
 
             </div>
@@ -526,13 +522,6 @@ RODAPÉ
 
     <!-- KPIS -->
     <div class="row g-4 mb-4">
-<div class="col-md-3">
-<div class="kpi-card card-total">
-<div class="kpi-icon" style="background:#eff6ff;color:#0d6efd;"><i class="bi bi-collection"></i></div>
-<div class="kpi-title">Total</div>
-<div class="kpi-value" id="kpiTotal">0</div>
-</div>
-</div>
 
         <div class="col-md-4">
 
@@ -640,9 +629,7 @@ RODAPÉ
         
 <div class="p-3 border-bottom bg-light">
     <div class="row g-2">
-<div class="col-md-12 mb-2">
-<input type="text" id="buscaGlobal" class="form-control" placeholder="🔍 Pesquisar motorista, placa ou local">
-</div>
+
 
         <div class="col-md-3">
             <select id="filtroLocal" class="form-select" multiple>
