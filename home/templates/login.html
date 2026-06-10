@@ -39,7 +39,8 @@
 
             min-height:100vh;
 
-            overflow:hidden;
+            overflow-x:hidden;
+            overflow-y:auto;
 
             background:#0b3b22;
 
@@ -138,7 +139,7 @@
 
         .main-container{
 
-            min-height:100vh;
+            min-height:100dvh;
 
             display:flex;
 
@@ -146,7 +147,9 @@
 
             align-items:center;
 
-            padding:20px 20px 110px 20px;
+            padding:20px;
+
+            width:100%;
         }
 
         /* ===================================
@@ -157,7 +160,7 @@
 
             width:100%;
 
-            max-width:620px;
+            max-width:540px;
 
             background:rgba(255,255,255,0.95);
             backdrop-filter:blur(12px);
@@ -175,6 +178,8 @@
             position:relative;
 
             overflow:hidden;
+
+            max-height:95vh;
         }
 
         @keyframes fadeIn{
@@ -223,9 +228,13 @@
 
         .logo img{
 
-            width:230px;
+            width:100%;
 
-            max-width:100%;
+            max-width:220px;
+
+            height:auto;
+
+            object-fit:contain;
         }
 
         /* ===================================
@@ -663,7 +672,82 @@ LOADING SCREEN
         transform:scale(1);
     }
 }
-    </style>
+    
+/* ===================================
+RESPONSIVIDADE AVANÇADA
+=================================== */
+
+@media (max-width:768px){
+
+    .circle{
+        display:none;
+    }
+
+    .left-effect{
+        width:100%;
+        background:linear-gradient(
+            180deg,
+            rgba(0,70,35,0.85),
+            rgba(0,70,35,0.35)
+        );
+    }
+
+    .login-card{
+        max-width:100%;
+        padding:24px 18px;
+    }
+
+    .logo img{
+        max-width:180px;
+    }
+}
+
+@media (max-width:480px){
+
+    .login-card{
+        padding:18px 14px;
+        border-radius:20px;
+    }
+
+    .logo img{
+        max-width:150px;
+    }
+
+    .title{
+        font-size:18px;
+    }
+
+    .subtitle{
+        font-size:12px;
+    }
+
+    .footer{
+        font-size:9px;
+    }
+}
+
+@media (min-width:1600px){
+
+    .login-card{
+        max-width:600px;
+    }
+}
+
+@media (max-height:700px){
+
+    .main-container{
+        align-items:flex-start;
+        padding-top:30px;
+        padding-bottom:80px;
+    }
+
+    .footer{
+        position:relative;
+        margin-top:20px;
+    }
+}
+
+</style>
 
 </head>
 
