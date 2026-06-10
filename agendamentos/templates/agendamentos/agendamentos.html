@@ -1,13 +1,7 @@
 {% extends 'base.html' %}
 {% load static %}
 
-{% block title %}Agendamentos | Crops Gate
-<div class="rodape-crops">
-    <div><strong>© 2026 Studio KaSoftware. Todos os direitos reservados.</strong></div>
-    <div>Sistema Crops Gate v1.0</div>
-</div>
-
-{% endblock %}
+{% block title %}Agendamentos | Crops Gate{% endblock %}
 
 
 {% block content %}
@@ -307,6 +301,11 @@ RESPONSIVO
         padding:14px;
     }
 
+    .logo-wrapper{
+        justify-content:center;
+        margin-top:12px;
+    }
+
     .menu-topo{
 
         padding:10px 5px;
@@ -315,12 +314,21 @@ RESPONSIVO
 
 
 /* LOGO CROPS GATE */
+.logo-wrapper{
+    display:flex;
+    justify-content:flex-end;
+    align-items:center;
+}
 .logo-crops{
-    max-height:70px;
-    background:#fff;
-    padding:8px 14px;
-    border-radius:16px;
-    box-shadow:0 4px 15px rgba(0,0,0,.15);
+    max-height:85px;
+    background:rgba(255,255,255,.98);
+    padding:10px 18px;
+    border-radius:18px;
+    box-shadow:0 8px 25px rgba(0,0,0,.18);
+    transition:.3s;
+}
+.logo-crops:hover{
+    transform:scale(1.03);
 }
 
 /* RODAPÉ */
@@ -424,11 +432,13 @@ RESPONSIVO
         Seja bem-vindo ao Portal de Solicitação de Agendamentos.
     </small>
 
-    <div class="mt-2">
-        <img src="{% static 'img/logo.png' %}"
-             alt="Crops Gate"
-             style="max-height:60px;">
-    </div>
+    <div class="logo-wrapper mt-2">
+    <img
+        src="{% static 'img/logo.png' %}"
+        alt="Crops Gate"
+        class="logo-crops"
+    >
+</div>
 </div>
                         </div>
 
